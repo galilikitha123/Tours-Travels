@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TravelOne — Tours & Travels (Single‑File, Final)</title>
+  <meta name="description" content="Self‑contained Tours & Travels site: destinations, trips with filters, itinerary, events & reminders, testimonials carousel with photos, booking form, and contact details. Vanilla HTML/CSS/JS only." />
+  <style>
+    :root { --bg:#fff; --text:#1a1a1a; --muted:#666; --primary:#2f6fed; --primary-contrast:#fff; --surface:#f5f7fb; --border:#e5e7eb; --accent:#22c55e; --danger:#ef4444; }
+    [data-theme="dark"]{ --bg:#0f172a; --text:#e5e7eb; --muted:#a3a3a3; --primary:#7aa2ff; --primary-contrast:#0f172a; --surface:#111827; --border:#1f2937; --accent:#34d399; --danger:#fb7185; }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial; color:var(--text); background:var(--bg); line-height:1.6}
+    a{color:var(--primary);text-decoration:none}
+    img{max-width:100%;display:block;border-radius:.5rem}
+    .container{width:min(1100px,100%);margin:0 auto;padding:0 1rem}
+    .grid{display:grid;gap:1rem}
+    .grid-2{grid-template-columns:repeat(2,1fr)}
+    @media(max-width:900px){.grid-2{grid-template-columns:1fr}}
+
+    header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(180%) blur(8px);background:color-mix(in srgb,var(--bg) 85%,transparent);border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+    .brand{font-weight:700;letter-spacing:.2px;display:flex;align-items:center;gap:.5rem}
+    .logo{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent))}
+    .nav-links{display:flex;gap:.75rem;align-items:center}
+    .nav-links a{padding:.5rem .75rem;border-radius:.5rem}
+    .hamburger{display:none;background:none;border:1px solid var(--border);padding:.5rem;border-radius:.5rem}
+    @media(max-width:900px){.hamburger{display:inline-flex}.nav-links{display:none;position:absolute;left:0;right:0;top:64px;background:var(--bg);border-bottom:1px solid var(--border);padding:1rem}.nav-links.open{display:grid;grid-template-columns:1fr}}
+
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1rem;border-radius:.6rem;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer}
+    .btn.primary{background:var(--primary);color:var(--primary-contrast);border-color:color-mix(in srgb,var(--primary) 70%,black 30%)}
+    .btn.success{background:var(--accent);color:var(--primary-contrast)}
+    .btn.danger{background:var(--danger);color:#fff}
+    .input{padding:.6rem .75rem;border-radius:.5rem;border:1px solid var(--border);background:var(--bg);color:var(--text)}
+    .range{width:100%}
+    .badge{display:inline-block;padding:.25rem .5rem;border:1px solid var(--border);border-radius:.5rem;font-size:.8rem;background:var(--surface)}
+
+    .hero{padding:3.5rem 0;background:linear-gradient(180deg,var(--surface),transparent)}
+    .hero h1{font-size:clamp(2rem,4vw,3rem);margin:0 0 .5rem}
+    .hero p{color:var(--muted);margin:0 0 1rem}
+
+    section{padding:3rem 0;border-top:1px solid var(--border)}
+    h2{font-size:1.5rem;margin:0 0 1rem}
+    .card{border:1px solid var(--border);border-radius:.75rem;padding:1rem;background:var(--surface)}
+
+    /* Carousel (testimonials share styles) */
+    .carousel{position:relative}
+    .carousel-track{display:flex;overflow:hidden;scroll-behavior:smooth}
+    .carousel-track > *{flex:0 0 100%}
+    .carousel-controls{position:absolute;inset:auto 0 0;display:flex;justify-content:center;gap:.5rem;padding:.5rem}
+    .dot{width:10px;height:10px;border-radius:50%;background:var(--border);border:none}
+    .dot.active{background:var(--primary)}
+    .prev,.next{position:absolute;top:50%;transform:translateY(-50%);background:var(--bg);border:1px solid var(--border);padding:.4rem .6rem;border-radius:.5rem}
+    .prev{left:.5rem}.next{right:.5rem}
+
+    .list{display:grid;gap:1rem;grid-template-columns:repeat(3,1fr)}
+    @media(max-width:900px){.list{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:600px){.list{grid-template-columns:1fr}}
+
+    .modal-backdrop{position:fixed;inset:0;background:color-mix(in srgb,black 40%,transparent);display:none;align-items:center;justify-content:center}
+    .modal-backdrop.open{display:flex}
+    .modal{width:min(640px,92%);background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:.75rem;box-shadow:0 20px 40px rgba(0,0,0,.25)}
+    .modal header{position:static;border-bottom:1px solid var(--border)}
+    .modal .body{padding:1rem}
+
+    .toast{position:fixed;right:1rem;bottom:1rem;background:var(--bg);color:var(--text);border:1px solid var(--border);padding:.75rem 1rem;border-radius:.6rem;box-shadow:0 4px 14px rgba(0,0,0,.2);display:none}
+    .toast.show{display:block}
+
+    footer{padding:2rem 0;border-top:1px solid var(--border);color:var(--muted)}
+    .scroll-top{position:fixed;bottom:1rem;left:1rem;display:none}
+    .scroll-top.show{display:inline-flex}
+
+    .reveal{opacity:0;transform:translateY(12px);transition:opacity .4s ease,transform .4s ease}
+    .reveal.show{opacity:1;transform:none}
+
+    .progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--accent));width:0%;z-index:60}
+
+    .seg{display:inline-flex;border:1px solid var(--border);border-radius:.6rem;overflow:hidden}
+    .seg button{border:none;background:var(--bg);padding:.5rem .75rem}
+    .seg button[aria-pressed="true"]{background:var(--primary);color:var(--primary-contrast)}
+
+    .range-wrap{position:relative}
+    .range-bubble{position:absolute;top:-1.8rem;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:.15rem .4rem;border-radius:.4rem;font-size:.75rem}
+
+    /* Testimonials layout with avatar image */
+    .testimonial{display:grid;grid-template-columns:80px 1fr;gap:.75rem;align-items:center}
+    .avatar{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--border)}
+  </style>
+</head>
+<body>
+  <!-- Single-file app: HTML + CSS + vanilla JS only -->
+  <div class="progress" id="progress"></div>
+  <a class="skip-link" href="#main" style="position:absolute;left:-9999px;top:-9999px;">Skip to content</a>
+  <header>
+    <div class="container nav" role="navigation" aria-label="Primary">
+      <div class="brand"><span class="logo" aria-hidden="true"></span>TravelOne</div>
+      <button class="hamburger" aria-expanded="false" aria-controls="primary-nav" title="Menu" id="btnHamburger">☰</button>
+      <nav id="primary-nav" class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#destinations">Destinations</a>
+        <a href="#trips">Trips</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#events">Events</a>
+        <a href="#contact">Contact</a>
+        <button id="btnTheme" class="btn" aria-pressed="false" title="Toggle theme">🌗 Theme</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section id="home" class="hero">
+      <div class="container grid grid-2">
+        <div>
+          <h1 class="reveal">Find your next getaway</h1>
+          <p class="reveal">Hand‑picked trips from Chennai to beaches, hills, and backwaters. Transparent pricing and instant confirmations.</p>
+          <div class="reveal" style="display:flex; gap:.5rem; margin-top:1rem;">
+            <a href="#trips" class="btn primary">Browse Trips</a>
+            <button class="btn" id="btnOpenModal">Quick Book</button>
+          </div>
+          <div class="card reveal" style="margin-top:1rem; display:flex; align-items:center; gap:.75rem;">
+            <strong class="badge">Festive Offer</strong>
+            <span id="countdown" aria-live="polite">Offer ends soon…</span>
+          </div>
+        </div>
+        <div>
+          <img src="https://picsum.photos/seed/travelhero/800/500" alt="Traveler overlooking a scenic valley" loading="lazy" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Destinations -->
+    <section id="destinations">
+      <div class="container">
+        <h2>Top Destinations</h2>
+        <div class="list" id="destList" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- Testimonials Carousel with pictures -->
+    <section id="testimonials">
+      <div class="container">
+        <h2>What Travelers Say</h2>
+        <div class="carousel" id="testimonialsCarousel" aria-label="Testimonials">
+          <button class="prev" aria-label="Previous testimonial" id="tPrev">‹</button>
+          <div class="carousel-track" tabindex="0">
+            <figure class="card testimonial" style="margin:0 .5rem;">
+              <img class="avatar" src="https://picsum.photos/seed/face1/120/120" alt="Aishwarya S" />
+              <div>
+                <blockquote>“Flawless booking and superb guides. The Ooty retreat was a dream!”</blockquote>
+                <figcaption>— Aishwarya S • ★★★★★</figcaption>
+              </div>
+            </figure>
+            <figure class="card testimonial" style="margin:0 .5rem;">
+              <img class="avatar" src="https://picsum.photos/seed/face2/120/120" alt="Rahul K" />
+              <div>
+                <blockquote>“Budget trip to Pondy was totally worth it. Clean stay and great food.”</blockquote>
+                <figcaption>— Rahul K • ★★★★☆</figcaption>
+              </div>
+            </figure>
+            <figure class="card testimonial" style="margin:0 .5rem;">
+              <img class="avatar" src="https://picsum.photos/seed/face3/120/120" alt="Nisha M" />
+              <div>
+                <blockquote>“Backwater cruise was serene. Loved the punctual pickups.”</blockquote>
+                <figcaption>— Nisha M • ★★★★★</figcaption>
+              </div>
+            </figure>
+          </div>
+          <button class="next" aria-label="Next testimonial" id="tNext">›</button>
+          <div class="carousel-controls" aria-hidden="false">
+            <button class="dot" aria-label="Slide 1"></button>
+            <button class="dot" aria-label="Slide 2"></button>
+            <button class="dot" aria-label="Slide 3"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trips -->
+    <section id="trips">
+      <div class="container">
+        <h2>Trips (Search • Budget filter • Sort • Price • Itinerary)</h2>
+        <div class="toolbar" style="display:flex; gap:.75rem; flex-wrap:wrap; align-items:center;">
+          <input type="search" id="q" class="input" placeholder="Search trips…" aria-label="Search trips" />
+          <select id="month" class="input" aria-label="Filter by month">
+            <option value="">Any month</option>
+            <option>January</option><option>February</option><option>March</option><option>April</option>
+            <option>May</option><option>June</option><option>July</option><option>August</option>
+            <option>September</option><option>October</option><option>November</option><option>December</option>
+          </select>
+          <select id="sortTrips" class="input" aria-label="Sort by">
+            <option value="name">Name</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="rating">Rating</option>
+          </select>
+          <div class="range-wrap">
+            <input type="range" id="priceMax" class="range" min="500" max="25000" step="500" value="25000" aria-label="Max price" />
+            <span class="range-bubble" id="priceBubble">₹25,000</span>
+          </div>
+          <div class="seg" role="group" aria-label="Budget filter">
+            <button class="seg-btn" data-budget="all" aria-pressed="true">All</button>
+            <button class="seg-btn" data-budget="budget">Budget (&lt; ₹3k)</button>
+            <button class="seg-btn" data-budget="mid">Mid (₹3k–₹10k)</button>
+            <button class="seg-btn" data-budget="premium">Premium (&gt; ₹10k)</button>
+          </div>
+          <div class="badge">Currency: <button class="btn" id="btnCurrency" aria-pressed="false">INR</button></div>
+          <button class="btn" id="btnItinerary" aria-controls="itineraryModal" aria-haspopup="dialog">🧳 Itinerary <span class="badge" id="itiCount">0</span></button>
+          <button class="btn" id="btnSaveFilters">💾 Save Filters</button>
+        </div>
+        <div class="list" id="tripList" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- Events -->
+    <section id="events">
+      <div class="container">
+        <h2>Upcoming Events (Tours, Treks & Workshops)</h2>
+        <div class="grid grid-2">
+          <div class="card">
+            <h3>Calendar</h3>
+            <div id="eventList" class="grid"></div>
+          </div>
+          <div class="card">
+            <h3>Notifications</h3>
+            <p class="muted">Choose events and set reminders (local only).</p>
+            <div id="eventActions"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Booking + Contact details -->
+    <section id="contact">
+      <div class="container">
+        <h2>Quick Booking</h2>
+        <form id="bookingForm" class="card" novalidate>
+          <div class="grid grid-2">
+            <div>
+              <label for="fullName">Full name</label>
+              <input id="fullName" class="input" required minlength="2" placeholder="Your name" />
+              <small id="nameHelp" class="badge" aria-live="polite"></small>
+            </div>
+            <div>
+              <label for="email">Email</label>
+              <input id="email" class="input" type="email" required placeholder="you@example.com" />
+              <small id="emailHelp" class="badge" aria-live="polite"></small>
+            </div>
+          </div>
+          <div class="grid grid-2">
+            <div>
+              <label for="date">Travel date</label>
+              <input id="date" class="input" type="date" required />
+              <small id="dateHelp" class="badge" aria-live="polite"></small>
+            </div>
+            <div>
+              <label for="guests">Guests</label>
+              <input id="guests" class="input" type="number" min="1" max="10" value="2" required />
+              <small id="guestsHelp" class="badge" aria-live="polite"></small>
+            </div>
+          </div>
+          <div class="grid grid-2">
+            <div>
+              <label for="tripSelect">Select trip</label>
+              <select id="tripSelect" class="input" required></select>
+              <small id="tripHelp" class="badge" aria-live="polite"></small>
+            </div>
+            <div>
+              <label for="promo">Promo code (optional)</label>
+              <input id="promo" class="input" placeholder="e.g., WELCOME500" />
+              <small class="badge">Try: WELCOME500 (₹500 off), BUDGET250 (₹250 off)</small>
+            </div>
+          </div>
+          <div style="display:flex; gap:.5rem; margin-top:1rem;">
+            <button type="submit" class="btn primary">Confirm Booking</button>
+            <button type="reset" class="btn">Reset</button>
+          </div>
+        </form>
+
+        <div class="card" style="margin-top:1rem;">
+          <h3>Contact Details</h3>
+          <p><strong>Email:</strong> <a id="contactEmail" href="mailto:hello@travelone.com">hello@travelone.com</a></p>
+          <p><strong>Phone:</strong> <a id="contactPhone" href="tel:+919876543210">+91 98765 43210</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modals -->
+    <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+      <div class="modal" role="document">
+        <header>
+          <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:56px;">
+            <h3 id="modalTitle">Quick Book</h3>
+            <button class="btn" id="btnCloseModal" aria-label="Close">✕</button>
+          </div>
+        </header>
+        <div class="body">
+          <p>Use the booking form to confirm a trip or open your itinerary to manage selected trips.</p>
+          <p><button class="btn" id="openBooking">Open Booking Form</button> <button class="btn" id="openItinerary">Open Itinerary</button></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-backdrop" id="itineraryModal" role="dialog" aria-modal="true" aria-labelledby="itiTitle" aria-hidden="true">
+      <div class="modal" role="document">
+        <header>
+          <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:56px;">
+            <h3 id="itiTitle">Your Itinerary</h3>
+            <button class="btn" id="btnCloseItinerary" aria-label="Close">✕</button>
+          </div>
+        </header>
+        <div class="body">
+          <div id="itineraryItems"></div>
+          <div style="display:flex; gap:.5rem; margin-top:1rem;">
+            <button class="btn success" id="btnDownloadItinerary">Download (.json)</button>
+            <button class="btn danger" id="btnClearItinerary">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <button class="btn scroll-top" id="scrollTop" aria-label="Scroll to top">↑ Top</button>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© <span id="year"></span> TravelOne. Built with ❤️ in vanilla HTML, CSS & JS.</p>
+    </div>
+  </footer>
+
+  <!-- Embedded JSON data -->
+  <script type="application/json" id="data-destinations">[
+    {"id":1,"name":"Pondicherry Beaches","region":"Tamil Nadu","img":"https://picsum.photos/seed/pondy/500/320"},
+    {"id":2,"name":"Ooty Hills","region":"Tamil Nadu","img":"https://picsum.photos/seed/ooty/500/320"},
+    {"id":3,"name":"Kerala Backwaters","region":"Kerala","img":"https://picsum.photos/seed/kerala/500/320"},
+    {"id":4,"name":"Goa Getaway","region":"Goa","img":"https://picsum.photos/seed/goa/500/320"}
+  ]</script>
+
+  <script type="application/json" id="data-trips">[
+    {"id":101,"name":"Chennai → Pondicherry Weekend","month":"February","days":2,"rating":4.6,"price":3499,"img":"https://picsum.photos/seed/pondytrip/400/250"},
+    {"id":102,"name":"Ooty Hill Retreat","month":"March","days":3,"rating":4.8,"price":8999,"img":"https://picsum.photos/seed/ootytrip/400/250"},
+    {"id":103,"name":"Kerala Backwater Cruise","month":"January","days":4,"rating":4.7,"price":12999,"img":"https://picsum.photos/seed/keralatrip/400/250"},
+    {"id":104,"name":"Goa Beach Escape","month":"April","days":3,"rating":4.5,"price":10999,"img":"https://picsum.photos/seed/goatrip/400/250"},
+    {"id":105,"name":"Yercaud Nature Trail","month":"February","days":2,"rating":4.4,"price":4999,"img":"https://picsum.photos/seed/yercaud/400/250"},
+    {"id":106,"name":"Mahabalipuram Day Trip","month":"January","days":1,"rating":4.3,"price":1499,"img":"https://picsum.photos/seed/mahabalipuram/400/250"},
+    {"id":107,"name":"Pulicat Bird Sanctuary","month":"December","days":1,"rating":4.2,"price":1299,"img":"https://picsum.photos/seed/pulicat/400/250"},
+    {"id":108,"name":"Marina Heritage Walk","month":"November","days":1,"rating":4.1,"price":999,"img":"https://picsum.photos/seed/marinawalk/400/250"},
+    {"id":109,"name":"Kodaikanal Misty Escape","month":"June","days":3,"rating":4.6,"price":8499,"img":"https://picsum.photos/seed/kodai/400/250"},
+    {"id":110,"name":"Munnar Tea Trails","month":"July","days":3,"rating":4.7,"price":9599,"img":"https://picsum.photos/seed/munnar/400/250"},
+    {"id":111,"name":"Coorg Coffee Weekend","month":"August","days":3,"rating":4.5,"price":10499,"img":"https://picsum.photos/seed/coorg/400/250"},
+    {"id":112,"name":"Hampi Heritage Explorer","month":"September","days":3,"rating":4.6,"price":6999,"img":"https://picsum.photos/seed/hampi/400/250"}
+  ]</script>
+
+  <script type="application/json" id="data-events">[
+    {"id":201,"title":"Sunrise Trek - Ooty","date":"2026-02-12","type":"Trek"},
+    {"id":202,"title":"Photography Workshop - Pondy","date":"2026-03-03","type":"Workshop"},
+    {"id":203,"title":"Kayaking - Kerala","date":"2026-01-29","type":"Activity"},
+    {"id":204,"title":"Beach Clean-up - Goa","date":"2026-04-15","type":"Community"}
+  ]</script>
+
+  <script>
+    // Utilities
+    const $ = (s, r=document)=>r.querySelector(s); const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+    const debounce=(fn,ms=250)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}};
+    const currency={code:'INR',rate:1}; const money=(n)=>new Intl.NumberFormat('en-IN',{style:'currency',currency:currency.code}).format(n*currency.rate);
+
+    // Theme
+    const applyTheme=(t)=>{document.documentElement.setAttribute('data-theme',t);try{localStorage.setItem('theme',t)}catch{}};
+    const initTheme=()=>{const s=(()=>{try{return localStorage.getItem('theme')}catch{return null}})(); const d=matchMedia('(prefers-color-scheme: dark)').matches; applyTheme(s|| (d?'dark':'light'))};
+
+    // Nav
+    const initNav=()=>{const b=$('#btnHamburger'), n=$('#primary-nav'); b.addEventListener('click',()=>{const o=n.classList.toggle('open'); b.setAttribute('aria-expanded',String(o)); if(o) n.querySelector('a')?.focus();}); document.addEventListener('click',(e)=>{if(!n.contains(e.target)&&e.target!==b&&n.classList.contains('open')){n.classList.remove('open'); b.setAttribute('aria-expanded','false')}}); document.addEventListener('keydown',(e)=>{if(e.key==='Escape'&&n.classList.contains('open')){n.classList.remove('open'); b.setAttribute('aria-expanded','false'); b.focus();}})};
+
+    // Scroll helpers
+    let revealObserver; const observeReveals=()=>{const els=$$('.reveal'); if(revealObserver) els.forEach(el=>revealObserver.observe(el))};
+    const initReveal=()=>{revealObserver=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show'); revealObserver.unobserve(e.target)}})},{threshold:.2}); observeReveals()};
+    const initScrollTop=()=>{const btn=$('#scrollTop'); window.addEventListener('scroll',()=>{const y=scrollY; btn.classList.toggle('show',y>300); $('#progress').style.width=Math.min(100,(y/(document.body.scrollHeight-innerHeight))*100)+'%'}); btn.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}))};
+
+    // Toast
+    const toast=(m,ms=2500)=>{const t=$('#toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),ms)};
+
+    // Countdown
+    const initCountdown=()=>{const el=$('#countdown'); const end=new Date(); end.setDate(end.getDate()+10); const tick=()=>{const now=new Date(); const d=Math.max(0,Math.floor((end-now)/1000)); const days=Math.floor(d/86400), hrs=Math.floor((d%86400)/3600), mins=Math.floor((d%3600)/60); el.textContent=`Ends in ${days}d ${hrs}h ${mins}m`}; tick(); setInterval(tick,60000)};
+
+    // Currency
+    const initCurrency=()=>{$('#btnCurrency').addEventListener('click',()=>{const toUSD=currency.code==='INR'; currency.code=toUSD?'USD':'INR'; currency.rate=toUSD?(1/83):1; $('#btnCurrency').textContent=currency.code; renderTrips(); updateTripSelect(); toast(`Currency: ${currency.code}`)} )};
+
+    // Data state
+    const state={destinations:[], trips:[], events:[], itinerary:[], filters:{}};
+    const loadData=()=>{ state.destinations=JSON.parse($('#data-destinations').textContent); state.trips=JSON.parse($('#data-trips').textContent); state.events=JSON.parse($('#data-events').textContent); };
+
+    // Destinations
+    const renderDestinations=()=>{const list=$('#destList'); list.innerHTML=''; state.destinations.forEach(d=>{const card=document.createElement('div'); card.className='card reveal'; card.innerHTML=`<img src="${d.img}" alt="${d.name}" loading="lazy"/><h3>${d.name}</h3><p class="badge">${d.region}</p><button class="btn" data-see="${d.id}">See trips</button>`; list.appendChild(card)}); observeReveals(); $$('#destList [data-see]').forEach(b=>b.addEventListener('click',()=>{ location.hash='#trips'; const dest=state.destinations.find(x=>x.id==+b.dataset.see); $('#q').value=dest.name.split(' ')[0]; renderTrips(); }))};
+
+    // Budget segmented control
+    let budgetMode='all';
+    const initBudgetSeg=()=>{ $$('.seg-btn').forEach(btn=>btn.addEventListener('click',()=>{ $$('.seg-btn').forEach(x=>x.setAttribute('aria-pressed','false')); btn.setAttribute('aria-pressed','true'); budgetMode=btn.dataset.budget; renderTrips(); })); };
+    const inBudget=(price)=>{ if(budgetMode==='budget') return price<3000; if(budgetMode==='mid') return price>=3000 && price<=10000; if(budgetMode==='premium') return price>10000; return true; };
+
+    // Trips + itinerary
+    const priceBubble=()=>{const r=$('#priceMax'), b=$('#priceBubble'); const v=Number(r.value); b.textContent=money(v); const pct=(v-r.min)/(r.max-r.min); b.style.left=(r.offsetWidth*pct)+'px'};
+    const renderTrips=()=>{ const list=$('#tripList'); const q=$('#q').value.trim().toLowerCase(); const m=$('#month').value; const s=$('#sortTrips').value; const max=Number($('#priceMax').value); let items=state.trips.filter(t=>(!m||t.month===m)&&(!q||t.name.toLowerCase().includes(q))&&t.price<=max&&inBudget(t.price)); if(s==='name') items.sort((a,b)=>a.name.localeCompare(b.name)); if(s==='price-asc') items.sort((a,b)=>a.price-b.price); if(s==='price-desc') items.sort((a,b)=>b.price-a.price); if(s==='rating') items.sort((a,b)=>b.rating-a.rating); list.innerHTML=''; if(!items.length){ list.innerHTML='<p class="badge">No trips match your filters.</p>'; return;} items.forEach(t=>{ const added=state.itinerary.some(x=>x.id===t.id); const card=document.createElement('div'); card.className='card reveal'; card.innerHTML=`<img src="${t.img}" alt="${t.name}" loading="lazy"/><h3>${t.name}</h3><p class="badge">${t.month} • ${t.days} days • ★ ${t.rating.toFixed(1)}</p><p><strong>${money(t.price)}</strong></p><div style="display:flex;gap:.5rem;"><button class="btn primary" data-add="${t.id}">${added?'Added':'Add to Itinerary'}</button><button class="btn" data-book="${t.id}">Book</button><button class="btn" data-details="${t.id}">Details</button></div>`; list.appendChild(card); }); observeReveals(); $$('#tripList [data-add]').forEach(b=>b.addEventListener('click',()=>addToItinerary(+b.dataset.add))); $$('#tripList [data-book]').forEach(b=>b.addEventListener('click',()=>{ $('#tripSelect').value=String(+b.dataset.book); location.hash='#contact'; toast('Trip preselected in booking form'); })); $$('#tripList [data-details]').forEach(b=>b.addEventListener('click',()=>showTripDetails(+b.dataset.details))); updateTripSelect(); priceBubble(); updateItiCount(); };
+    const updateTripSelect=()=>{ const sel=$('#tripSelect'); sel.innerHTML='<option value="">Select…</option>'+state.trips.map(t=>`<option value="${t.id}">${t.name} — ${money(t.price)}</option>`).join(''); };
+    const updateItiCount=()=>{ $('#itiCount').textContent=String(state.itinerary.length) };
+    const persistItinerary=()=>{ try{localStorage.setItem('itinerary',JSON.stringify(state.itinerary))}catch{} };
+    const loadItinerary=()=>{ try{state.itinerary=JSON.parse(localStorage.getItem('itinerary')||'[]')}catch{state.itinerary=[]} };
+    const addToItinerary=(id)=>{ const t=state.trips.find(x=>x.id===id); if(!t) return; if(!state.itinerary.some(x=>x.id===id)){ state.itinerary.push({id:t.id,name:t.name,price:t.price}); persistItinerary(); toast(`${t.name} added to itinerary`); renderTrips(); } };
+    const removeFromItinerary=(id)=>{ state.itinerary=state.itinerary.filter(x=>x.id!==id); persistItinerary(); renderItinerary(); renderTrips(); };
+    const moveIti=(id,dir)=>{ const i=state.itinerary.findIndex(x=>x.id===id); if(i<0) return; const ni=Math.max(0,Math.min(state.itinerary.length-1,i+dir)); if(i!==ni){ const [it]=state.itinerary.splice(i,1); state.itinerary.splice(ni,0,it); persistItinerary(); renderItinerary(); } };
+    const renderItinerary=()=>{ const box=$('#itineraryItems'); box.innerHTML=''; if(!state.itinerary.length){ box.innerHTML='<p class="badge">Your itinerary is empty.</p>'; return; } state.itinerary.forEach(x=>{ const row=document.createElement('div'); row.style.display='flex'; row.style.justifyContent='space-between'; row.style.alignItems='center'; row.style.gap='.5rem'; row.innerHTML=`<div><strong>${x.name}</strong></div><div>${money(x.price)}</div><div><button class="btn" data-remove="${x.id}">Remove</button><button class="btn" data-up="${x.id}">↑</button><button class="btn" data-down="${x.id}">↓</button></div>`; box.appendChild(row) }); $$('#itineraryItems [data-remove]').forEach(b=>b.addEventListener('click',()=>removeFromItinerary(+b.dataset.remove))); $$('#itineraryItems [data-up]').forEach(b=>b.addEventListener('click',()=>moveIti(+b.dataset.up,-1))); $$('#itineraryItems [data-down]').forEach(b=>b.addEventListener('click',()=>moveIti(+b.dataset.down,1))); updateItiCount(); };
+    const showTripDetails=(id)=>{ const t=state.trips.find(x=>x.id===id); const m=$('#modalBackdrop'); m.querySelector('#modalTitle').textContent=t.name; m.querySelector('.body').innerHTML=`<p><strong>Month:</strong> ${t.month} • <strong>Days:</strong> ${t.days} • <strong>Rating:</strong> ★ ${t.rating.toFixed(1)}</p><p><strong>Price:</strong> ${money(t.price)}</p><p>Curated experience with local guides, comfy stays, and flexible itineraries.</p>`; openModal('modalBackdrop'); };
+
+    // Events & reminders
+    const renderEvents=()=>{ const list=$('#eventList'), actions=$('#eventActions'); list.innerHTML=''; actions.innerHTML=''; state.events.forEach(ev=>{ const date=new Date(ev.date); const card=document.createElement('div'); card.className='card reveal'; card.innerHTML=`<strong>${ev.title}</strong><p class="badge">${date.toDateString()} • ${ev.type}</p><button class="btn" data-remind="${ev.id}">Set reminder</button>`; list.appendChild(card) }); observeReveals(); $$('#eventList [data-remind]').forEach(b=>b.addEventListener('click',()=>setReminder(+b.dataset.remind))); };
+    const setReminder=(id)=>{ const ev=state.events.find(x=>x.id===id); if(!ev) return; try{ const rs=JSON.parse(localStorage.getItem('reminders')||'[]'); if(!rs.some(x=>x.id===id)){ rs.push({id,title:ev.title,date:ev.date}); localStorage.setItem('reminders',JSON.stringify(rs)); toast('Reminder saved'); } else toast('Reminder already set'); }catch{ toast('Unable to save reminder'); } renderReminderActions(); };
+    const renderReminderActions=()=>{ const actions=$('#eventActions'); actions.innerHTML=''; let rs=[]; try{ rs=JSON.parse(localStorage.getItem('reminders')||'[]'); }catch{ rs=[] } if(!rs.length){ actions.innerHTML='<p class="badge">No reminders yet.</p>'; return; } rs.forEach(r=>{ const row=document.createElement('div'); row.style.display='flex'; row.style.justifyContent='space-between'; row.style.alignItems='center'; row.style.gap='.5rem'; row.innerHTML=`<div><strong>${r.title}</strong> • ${new Date(r.date).toDateString()}</div><div><button class="btn" data-ics="${r.id}">Download .ics</button><button class="btn" data-del="${r.id}">Delete</button></div>`; actions.appendChild(row) }); $$('#eventActions [data-del]').forEach(b=>b.addEventListener('click',()=>{ let rs=JSON.parse(localStorage.getItem('reminders')||'[]'); rs=rs.filter(x=>x.id!==+b.dataset.del); localStorage.setItem('reminders',JSON.stringify(rs)); toast('Reminder deleted'); renderReminderActions(); })); $$('#eventActions [data-ics]').forEach(b=>b.addEventListener('click',()=>downloadICS(+b.dataset.ics))); };
+    const downloadICS=(id)=>{ const ev=state.events.find(x=>x.id===id); if(!ev) return; const dt=new Date(ev.date); const ds=dt.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z'; const ics=`BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTAMP:${ds}\nDTSTART:${ds}\nSUMMARY:${ev.title}\nEND:VEVENT\nEND:VCALENDAR`; const blob=new Blob([ics],{type:'text/calendar'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`${ev.title.replace(/\s+/g,'_')}.ics`; a.click(); URL.revokeObjectURL(a.href); };
+
+    // Booking + promo code
+    const initBooking=()=>{ const f=$('#bookingForm'), name=$('#fullName'), email=$('#email'), date=$('#date'), guests=$('#guests'), trip=$('#tripSelect'), promo=$('#promo'); const nameH=$('#nameHelp'), emailH=$('#emailHelp'), dateH=$('#dateHelp'), guestsH=$('#guestsHelp'), tripH=$('#tripHelp'); const today=new Date().toISOString().split('T')[0]; date.min=today; const vName=()=>{const ok=name.value.trim().length>=2; nameH.textContent=ok?'':'Enter at least 2 characters.'; return ok}; const vEmail=()=>{const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim()); emailH.textContent=ok?'':'Enter a valid email.'; return ok}; const vDate=()=>{const ok=!!date.value; dateH.textContent=ok?'':'Pick a date.'; return ok}; const vGuests=()=>{const n=+guests.value; const ok=n>=1&&n<=10; guestsH.textContent=ok?'':'Guests must be 1–10.'; return ok}; const vTrip=()=>{const ok=!!trip.value; tripH.textContent=ok?'':'Select a trip.'; return ok}; name.addEventListener('input',debounce(vName,200)); email.addEventListener('input',debounce(vEmail,200)); date.addEventListener('change',vDate); guests.addEventListener('input',vGuests); trip.addEventListener('change',vTrip); f.addEventListener('submit',(e)=>{ e.preventDefault(); const ok=vName() & vEmail() & vDate() & vGuests() & vTrip(); if(!ok) return; const t=state.trips.find(x=>String(x.id)===trip.value); let total=t?t.price:0; const code=promo.value.trim().toUpperCase(); if(code==='WELCOME500') total=Math.max(0,total-500); if(code==='BUDGET250') total=Math.max(0,total-250); toast(`Booking confirmed! Total: ${money(total)} (${currency.code})`); f.reset(); }); };
+
+    // Modals
+    const openModal=(id)=>{ const b=document.getElementById(id); b.classList.add('open'); b.setAttribute('aria-hidden','false'); const fs=$$('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])',b); const first=fs[0], last=fs[fs.length-1]; const trap=(e)=>{ if(e.key==='Tab'){ if(e.shiftKey && document.activeElement===first){e.preventDefault(); last.focus()} else if(!e.shiftKey && document.activeElement===last){e.preventDefault(); first.focus()} } if(e.key==='Escape') closeModal(id) }; b.addEventListener('keydown',trap); b.addEventListener('click',(e)=>{ if(e.target===b) closeModal(id) }); first?.focus(); };
+    const closeModal=(id)=>{ const b=document.getElementById(id); b.classList.remove('open'); b.setAttribute('aria-hidden','true') };
+
+    // Testimonials carousel (auto-rotate + pause on hover/focus)
+    const initTestimonials=()=>{ const root=$('#testimonialsCarousel'); const track=root.querySelector('.carousel-track'); const dots=$$('.dot',root); const prev=$('#tPrev'), next=$('#tNext'); let idx=0, timer; const go=(i)=>{ idx=Math.max(0,Math.min(dots.length-1,i)); track.scrollTo({left: idx*track.clientWidth, behavior:'smooth'}); dots.forEach((d,j)=>d.classList.toggle('active',j===idx)); }; const play=()=>{ stop(); timer=setInterval(()=>go((idx+1)%dots.length), 3500) }; const stop=()=>{ if(timer) clearInterval(timer) }; window.addEventListener('resize',()=>go(idx)); dots.forEach((d,i)=>d.addEventListener('click',()=>go(i))); prev.addEventListener('click',()=>go(idx-1)); next.addEventListener('click',()=>go(idx+1)); track.addEventListener('keydown',(e)=>{ if(e.key==='ArrowRight') go(idx+1); if(e.key==='ArrowLeft') go(idx-1); }); root.addEventListener('mouseenter',stop); root.addEventListener('mouseleave',play); root.addEventListener('focusin',stop); root.addEventListener('focusout',play); go(0); play(); };
+
+    // Filters persistence
+    const saveFilters=()=>{ const f={ q:$('#q').value, m:$('#month').value, s:$('#sortTrips').value, max:$('#priceMax').value, budget:budgetMode, currency:currency.code }; try{ localStorage.setItem('filters', JSON.stringify(f)); toast('Filters saved'); }catch{} };
+    const loadFilters=()=>{ try{ const f=JSON.parse(localStorage.getItem('filters')||'null'); if(!f) return; $('#q').value=f.q||''; $('#month').value=f.m||''; $('#sortTrips').value=f.s||'name'; $('#priceMax').value=f.max||'25000'; budgetMode=f.budget||'all'; $$('.seg-btn').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.budget===budgetMode))); if(f.currency && f.currency!==currency.code){ currency.code=f.currency; currency.rate=(currency.code==='USD')?(1/83):1; $('#btnCurrency').textContent=currency.code; } }catch{} };
+
+    // Theme toggle button
+    const initThemeButton=()=>{ const btn=$('#btnTheme'); btn.addEventListener('click',()=>{ const cur=document.documentElement.getAttribute('data-theme'); const next=cur==='dark'?'light':'dark'; applyTheme(next); btn.setAttribute('aria-pressed',String(next==='dark')); }) };
+
+    // Init
+    const init=()=>{
+      initTheme(); initThemeButton(); initNav(); initReveal(); initScrollTop(); initCurrency(); initCountdown();
+      loadData(); loadItinerary(); loadFilters(); initBudgetSeg();
+      renderDestinations(); renderTrips(); renderEvents(); renderReminderActions(); initBooking(); initTestimonials();
+      // controls
+      $('#q').addEventListener('input',debounce(renderTrips,200)); $('#month').addEventListener('change',renderTrips); $('#sortTrips').addEventListener('change',renderTrips); $('#priceMax').addEventListener('input',()=>{priceBubble(); renderTrips()}); $('#btnOpenModal').addEventListener('click',()=>openModal('modalBackdrop')); $('#btnCloseModal').addEventListener('click',()=>closeModal('modalBackdrop')); $('#openBooking').addEventListener('click',()=>{ closeModal('modalBackdrop'); location.hash='#contact' }); $('#openItinerary').addEventListener('click',()=>{ closeModal('modalBackdrop'); openModal('itineraryModal'); renderItinerary(); }); $('#btnItinerary').addEventListener('click',()=>{ openModal('itineraryModal'); renderItinerary(); }); $('#btnCloseItinerary').addEventListener('click',()=>closeModal('itineraryModal')); $('#btnClearItinerary').addEventListener('click',()=>{ state.itinerary=[]; persistItinerary(); renderItinerary(); toast('Itinerary cleared'); }); $('#btnDownloadItinerary').addEventListener('click',()=>{ const blob=new Blob([JSON.stringify(state.itinerary,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='itinerary.json'; a.click(); URL.revokeObjectURL(a.href); }); $('#btnSaveFilters').addEventListener('click',saveFilters);
+      // footer year
+      $('#year').textContent = new Date().getFullYear();
+      // set bubble after possible filter restore
+      priceBubble();
+    };
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
