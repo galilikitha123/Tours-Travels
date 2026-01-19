@@ -1,100 +1,1119 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TravelOne — Tours & Travels (Single‑File, Final)</title>
-  <meta name="description" content="Self‑contained Tours & Travels site: destinations, trips with filters, itinerary, events & reminders, testimonials carousel with photos, booking form, and contact details. Vanilla HTML/CSS/JS only." />
+  <title>TravelOne – Premium Tours & Travels Experience</title>
+  <meta name="description"
+    content="Discover handpicked travel experiences with TravelOne. Book your next adventure with transparent pricing and instant confirmations." />
   <style>
-    :root { --bg:#fff; --text:#1a1a1a; --muted:#666; --primary:#2f6fed; --primary-contrast:#fff; --surface:#f5f7fb; --border:#e5e7eb; --accent:#22c55e; --danger:#ef4444; }
-    [data-theme="dark"]{ --bg:#0f172a; --text:#e5e7eb; --muted:#a3a3a3; --primary:#7aa2ff; --primary-contrast:#0f172a; --surface:#111827; --border:#1f2937; --accent:#34d399; --danger:#fb7185; }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial; color:var(--text); background:var(--bg); line-height:1.6}
-    a{color:var(--primary);text-decoration:none}
-    img{max-width:100%;display:block;border-radius:.5rem}
-    .container{width:min(1100px,100%);margin:0 auto;padding:0 1rem}
-    .grid{display:grid;gap:1rem}
-    .grid-2{grid-template-columns:repeat(2,1fr)}
-    @media(max-width:900px){.grid-2{grid-template-columns:1fr}}
+    /* ===== CSS VARIABLES & THEME SYSTEM ===== */
+    :root {
+      --bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --primary-light: #60a5fa;
+      --primary-contrast: #ffffff;
+      --surface: #f8fafc;
+      --surface-hover: #f1f5f9;
+      --border: #e2e8f0;
+      --accent: #10b981;
+      --accent-dark: #059669;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      --radius: 0.75rem;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-    header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(180%) blur(8px);background:color-mix(in srgb,var(--bg) 85%,transparent);border-bottom:1px solid var(--border)}
-    .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
-    .brand{font-weight:700;letter-spacing:.2px;display:flex;align-items:center;gap:.5rem}
-    .logo{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent))}
-    .nav-links{display:flex;gap:.75rem;align-items:center}
-    .nav-links a{padding:.5rem .75rem;border-radius:.5rem}
-    .hamburger{display:none;background:none;border:1px solid var(--border);padding:.5rem;border-radius:.5rem}
-    @media(max-width:900px){.hamburger{display:inline-flex}.nav-links{display:none;position:absolute;left:0;right:0;top:64px;background:var(--bg);border-bottom:1px solid var(--border);padding:1rem}.nav-links.open{display:grid;grid-template-columns:1fr}}
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --primary: #60a5fa;
+      --primary-dark: #3b82f6;
+      --primary-light: #93c5fd;
+      --primary-contrast: #0f172a;
+      --surface: #1e293b;
+      --surface-hover: #334155;
+      --border: #334155;
+      --accent: #34d399;
+      --accent-dark: #10b981;
+      --danger: #f87171;
+      --warning: #fbbf24;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+      --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
 
-    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1rem;border-radius:.6rem;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer}
-    .btn.primary{background:var(--primary);color:var(--primary-contrast);border-color:color-mix(in srgb,var(--primary) 70%,black 30%)}
-    .btn.success{background:var(--accent);color:var(--primary-contrast)}
-    .btn.danger{background:var(--danger);color:#fff}
-    .input{padding:.6rem .75rem;border-radius:.5rem;border:1px solid var(--border);background:var(--bg);color:var(--text)}
-    .range{width:100%}
-    .badge{display:inline-block;padding:.25rem .5rem;border:1px solid var(--border);border-radius:.5rem;font-size:.8rem;background:var(--surface)}
+    /* ===== BASE STYLES ===== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    .hero{padding:3.5rem 0;background:linear-gradient(180deg,var(--surface),transparent)}
-    .hero h1{font-size:clamp(2rem,4vw,3rem);margin:0 0 .5rem}
-    .hero p{color:var(--muted);margin:0 0 1rem}
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
 
-    section{padding:3rem 0;border-top:1px solid var(--border)}
-    h2{font-size:1.5rem;margin:0 0 1rem}
-    .card{border:1px solid var(--border);border-radius:.75rem;padding:1rem;background:var(--surface)}
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+      overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
 
-    /* Carousel (testimonials share styles) */
-    .carousel{position:relative}
-    .carousel-track{display:flex;overflow:hidden;scroll-behavior:smooth}
-    .carousel-track > *{flex:0 0 100%}
-    .carousel-controls{position:absolute;inset:auto 0 0;display:flex;justify-content:center;gap:.5rem;padding:.5rem}
-    .dot{width:10px;height:10px;border-radius:50%;background:var(--border);border:none}
-    .dot.active{background:var(--primary)}
-    .prev,.next{position:absolute;top:50%;transform:translateY(-50%);background:var(--bg);border:1px solid var(--border);padding:.4rem .6rem;border-radius:.5rem}
-    .prev{left:.5rem}.next{right:.5rem}
+    a {
+      color: var(--primary);
+      text-decoration: none;
+      transition: var(--transition);
+    }
 
-    .list{display:grid;gap:1rem;grid-template-columns:repeat(3,1fr)}
-    @media(max-width:900px){.list{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:600px){.list{grid-template-columns:1fr}}
+    a:hover {
+      color: var(--primary-dark);
+    }
 
-    .modal-backdrop{position:fixed;inset:0;background:color-mix(in srgb,black 40%,transparent);display:none;align-items:center;justify-content:center}
-    .modal-backdrop.open{display:flex}
-    .modal{width:min(640px,92%);background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:.75rem;box-shadow:0 20px 40px rgba(0,0,0,.25)}
-    .modal header{position:static;border-bottom:1px solid var(--border)}
-    .modal .body{padding:1rem}
+    img {
+      max-width: 100%;
+      display: block;
+      border-radius: var(--radius);
+    }
 
-    .toast{position:fixed;right:1rem;bottom:1rem;background:var(--bg);color:var(--text);border:1px solid var(--border);padding:.75rem 1rem;border-radius:.6rem;box-shadow:0 4px 14px rgba(0,0,0,.2);display:none}
-    .toast.show{display:block}
+    /* ===== LAYOUT ===== */
+    .container {
+      width: min(1200px, 100%);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
 
-    footer{padding:2rem 0;border-top:1px solid var(--border);color:var(--muted)}
-    .scroll-top{position:fixed;bottom:1rem;left:1rem;display:none}
-    .scroll-top.show{display:inline-flex}
+    .grid {
+      display: grid;
+      gap: 1.5rem;
+    }
 
-    .reveal{opacity:0;transform:translateY(12px);transition:opacity .4s ease,transform .4s ease}
-    .reveal.show{opacity:1;transform:none}
+    .grid-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
 
-    .progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--accent));width:0%;z-index:60}
+    .grid-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
 
-    .seg{display:inline-flex;border:1px solid var(--border);border-radius:.6rem;overflow:hidden}
-    .seg button{border:none;background:var(--bg);padding:.5rem .75rem}
-    .seg button[aria-pressed="true"]{background:var(--primary);color:var(--primary-contrast)}
+    @media (max-width: 1024px) {
+      .grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
 
-    .range-wrap{position:relative}
-    .range-bubble{position:absolute;top:-1.8rem;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:.15rem .4rem;border-radius:.4rem;font-size:.75rem}
+    @media (max-width: 768px) {
 
-    /* Testimonials layout with avatar image */
-    .testimonial{display:grid;grid-template-columns:80px 1fr;gap:.75rem;align-items:center}
-    .avatar{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--border)}
+      .grid-2,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ===== HEADER & NAVIGATION ===== */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: saturate(180%) blur(20px);
+      background: rgba(255, 255, 255, 0.8);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    [data-theme="dark"] header {
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    header.scrolled {
+      box-shadow: var(--shadow-md);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: var(--transition);
+    }
+
+    .brand:hover {
+      transform: translateY(-2px);
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      box-shadow: var(--shadow);
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      padding: 0.625rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .nav-links a::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transform: translateX(-50%);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::before {
+      width: 80%;
+    }
+
+    .nav-links a:hover {
+      background: var(--surface);
+      color: var(--primary);
+    }
+
+    .hamburger {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.625rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .hamburger:hover {
+      background: var(--surface-hover);
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      .hamburger {
+        display: inline-flex;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 72px;
+        background: var(--bg);
+        border-bottom: 1px solid var(--border);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-lg);
+        animation: slideDown 0.3s ease;
+      }
+
+      .nav-links.open {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: 0.625rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.9375rem;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: var(--primary-contrast);
+      border-color: transparent;
+      font-weight: 600;
+    }
+
+    .btn.primary:hover {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn.success {
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: white;
+      border-color: transparent;
+    }
+
+    .btn.success:hover {
+      box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn.danger {
+      background: var(--danger);
+      color: white;
+      border-color: transparent;
+    }
+
+    .btn.danger:hover {
+      background: #dc2626;
+      box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.4);
+    }
+
+    /* ===== FORM INPUTS ===== */
+    .input,
+    select {
+      padding: 0.75rem 1rem;
+      border-radius: 0.625rem;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.9375rem;
+      transition: var(--transition);
+      width: 100%;
+    }
+
+    .input:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .input:hover,
+    select:hover {
+      border-color: var(--primary-light);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* ===== BADGE & TAGS ===== */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.375rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      background: var(--surface);
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .badge:hover {
+      background: var(--surface-hover);
+      transform: scale(1.05);
+    }
+
+    /* ===== HERO SECTION ===== */
+    .hero {
+      padding: 5rem 0;
+      background: linear-gradient(180deg, var(--surface) 0%, transparent 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.5;
+      }
+
+      50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+      }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      margin: 0 0 1rem;
+      font-weight: 800;
+      line-height: 1.1;
+      background: linear-gradient(135deg, var(--text), var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      color: var(--muted);
+      margin: 0 0 2rem;
+      font-size: 1.125rem;
+      max-width: 600px;
+    }
+
+    /* ===== SECTIONS ===== */
+    section {
+      padding: 5rem 0;
+      position: relative;
+    }
+
+    section:not(:first-child) {
+      border-top: 1px solid var(--border);
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      margin: 0 0 2rem;
+      font-weight: 700;
+      position: relative;
+      display: inline-block;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 2px;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      margin: 0 0 0.5rem;
+      font-weight: 600;
+    }
+
+    /* ===== CARDS ===== */
+    .card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      background: var(--surface);
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary-light);
+    }
+
+    .card img {
+      margin-bottom: 1rem;
+      transition: var(--transition);
+      aspect-ratio: 16/10;
+      object-fit: cover;
+    }
+
+    .card:hover img {
+      transform: scale(1.05);
+    }
+
+    /* ===== CAROUSEL ===== */
+    .carousel {
+      position: relative;
+      padding: 1rem 0;
+    }
+
+    .carousel-track {
+      display: flex;
+      overflow: hidden;
+      scroll-behavior: smooth;
+      border-radius: var(--radius);
+    }
+
+    .carousel-track>* {
+      flex: 0 0 100%;
+      transition: opacity 0.5s ease;
+    }
+
+    .carousel-controls {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 1.5rem 0;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--border);
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .dot:hover {
+      background: var(--primary-light);
+      transform: scale(1.2);
+    }
+
+    .dot.active {
+      background: var(--primary);
+      width: 32px;
+      border-radius: 6px;
+    }
+
+    .prev,
+    .next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 0.75rem 1rem;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+      z-index: 10;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .prev:hover,
+    .next:hover {
+      background: var(--primary);
+      color: var(--primary-contrast);
+      transform: translateY(-50%) scale(1.1);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .prev {
+      left: 1rem;
+    }
+
+    .next {
+      right: 1rem;
+    }
+
+    /* ===== TESTIMONIALS ===== */
+    .testimonial {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 1.5rem;
+      align-items: center;
+      padding: 1.5rem;
+    }
+
+    .avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--primary);
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+    }
+
+    .testimonial:hover .avatar {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: var(--shadow-lg);
+    }
+
+    blockquote {
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+      font-size: 1.0625rem;
+      line-height: 1.7;
+    }
+
+    figcaption {
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ===== MODALS ===== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      width: min(700px, 95%);
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-xl);
+      animation: slideUp 0.3s ease;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal header {
+      position: static;
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem;
+      background: var(--surface);
+    }
+
+    .modal .body {
+      padding: 2rem;
+    }
+
+    /* ===== TOAST NOTIFICATIONS ===== */
+    .toast {
+      position: fixed;
+      right: 1.5rem;
+      bottom: 1.5rem;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      display: none;
+      z-index: 1001;
+      min-width: 300px;
+      animation: slideInRight 0.3s ease;
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(100px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    .toast.success {
+      border-left: 4px solid var(--accent);
+    }
+
+    .toast.error {
+      border-left: 4px solid var(--danger);
+    }
+
+    .toast.info {
+      border-left: 4px solid var(--primary);
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      padding: 3rem 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      background: var(--surface);
+    }
+
+    /* ===== SCROLL EFFECTS ===== */
+    .scroll-top {
+      position: fixed;
+      bottom: 2rem;
+      left: 2rem;
+      display: none;
+      z-index: 100;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .scroll-top.show {
+      display: inline-flex;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    .progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      width: 0%;
+      z-index: 101;
+      transition: width 0.1s ease;
+      box-shadow: 0 0 10px var(--primary);
+    }
+
+    /* ===== SEGMENTED CONTROL ===== */
+    .seg {
+      display: inline-flex;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--surface);
+    }
+
+    .seg button {
+      border: none;
+      background: transparent;
+      padding: 0.625rem 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 500;
+      border-right: 1px solid var(--border);
+    }
+
+    .seg button:last-child {
+      border-right: none;
+    }
+
+    .seg button:hover {
+      background: var(--surface-hover);
+    }
+
+    .seg button[aria-pressed="true"] {
+      background: var(--primary);
+      color: var(--primary-contrast);
+    }
+
+    /* ===== RANGE SLIDER ===== */
+    .range-wrap {
+      position: relative;
+      padding-top: 2rem;
+    }
+
+    .range {
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 8px;
+      border-radius: 4px;
+      background: var(--border);
+      outline: none;
+    }
+
+    .range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+
+    .range::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+      box-shadow: var(--shadow-md);
+    }
+
+    .range::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      border: none;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+
+    .range::-moz-range-thumb:hover {
+      transform: scale(1.2);
+      box-shadow: var(--shadow-md);
+    }
+
+    .range-bubble {
+      position: absolute;
+      top: 0;
+      transform: translateX(-50%);
+      background: var(--text);
+      color: var(--bg);
+      padding: 0.375rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+      white-space: nowrap;
+    }
+
+    .range-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 8px;
+      background: var(--text);
+      transform: translateX(-50%) rotate(45deg);
+    }
+
+    /* ===== TOOLBAR ===== */
+    .toolbar {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    .mt-2 {
+      margin-top: 8px;
+    }
+
+
+    /* ===== LOADING SPINNER ===== */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ===== COUNTDOWN CARD ===== */
+    .countdown-card {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      border: none;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .countdown-card .badge {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* ===== RESPONSIVE ADJUSTMENTS ===== */
+    @media (max-width: 768px) {
+      .hero {
+        padding: 3rem 0;
+      }
+
+      h2 {
+        font-size: 2rem;
+      }
+
+      .testimonial {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .avatar {
+        margin: 0 auto;
+      }
+
+      .toolbar {
+        padding: 1rem;
+      }
+
+      .prev,
+      .next {
+        width: 36px;
+        height: 36px;
+        font-size: 1.25rem;
+      }
+    }
+
+    /* ===== UTILITY CLASSES ===== */
+    .text-center {
+      text-align: center;
+    }
+
+    .flex {
+      display: flex;
+    }
+
+    .flex-center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gap-1 {
+      gap: 0.5rem;
+    }
+
+    .gap-2 {
+      gap: 1rem;
+    }
+
+    .gap-3 {
+      gap: 1.5rem;
+    }
+
+    .mt-1 {
+      margin-top: 0.5rem;
+    }
+
+    .mt-2 {
+      margin-top: 1rem;
+    }
+
+    .mt-3 {
+      margin-top: 1.5rem;
+    }
+
+    .mb-1 {
+      margin-bottom: 0.5rem;
+    }
+
+    .mb-2 {
+      margin-bottom: 1rem;
+    }
+
+    .mb-3 {
+      margin-bottom: 1.5rem;
+    }
+
+    /* ===== VIDEO WRAPPER ===== */
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      /* 16:9 aspect ratio */
+      height: 0;
+      overflow: hidden;
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    @media (max-width: 768px) {
+      .video-wrapper {
+        padding-bottom: 75%;
+        /* Adjust for mobile */
+      }
+    }
   </style>
 </head>
+
 <body>
-  <!-- Single-file app: HTML + CSS + vanilla JS only -->
+  <!-- Progress Bar -->
   <div class="progress" id="progress"></div>
+
+  <!-- Skip Link for Accessibility -->
   <a class="skip-link" href="#main" style="position:absolute;left:-9999px;top:-9999px;">Skip to content</a>
-  <header>
+
+  <!-- ===== HEADER ===== -->
+  <header id="header">
     <div class="container nav" role="navigation" aria-label="Primary">
-      <div class="brand"><span class="logo" aria-hidden="true"></span>TravelOne</div>
-      <button class="hamburger" aria-expanded="false" aria-controls="primary-nav" title="Menu" id="btnHamburger">☰</button>
+      <div class="brand">
+        <span class="logo" aria-hidden="true">✈️</span>
+        TravelOne
+      </div>
+      <button class="hamburger" aria-expanded="false" aria-controls="primary-nav" title="Menu"
+        id="btnHamburger">☰</button>
       <nav id="primary-nav" class="nav-links">
         <a href="#home">Home</a>
         <a href="#destinations">Destinations</a>
@@ -102,72 +1121,78 @@
         <a href="#testimonials">Testimonials</a>
         <a href="#events">Events</a>
         <a href="#contact">Contact</a>
-        <button id="btnTheme" class="btn" aria-pressed="false" title="Toggle theme">🌗 Theme</button>
+        <button id="btnTheme" class="btn" aria-pressed="false" title="Toggle theme">
+          <span id="themeIcon">🌙</span> Theme
+        </button>
       </nav>
     </div>
   </header>
 
+  <!-- ===== MAIN CONTENT ===== -->
   <main id="main">
+    <!-- Hero Section -->
     <section id="home" class="hero">
       <div class="container grid grid-2">
         <div>
           <h1 class="reveal">Find your next getaway</h1>
-          <p class="reveal">Hand‑picked trips from Chennai to beaches, hills, and backwaters. Transparent pricing and instant confirmations.</p>
-          <div class="reveal" style="display:flex; gap:.5rem; margin-top:1rem;">
+          <p class="reveal">Hand-picked trips from Chennai to beaches, hills, and backwaters. Transparent pricing and
+            instant confirmations.</p>
+          <div class="reveal flex gap-2 mt-3">
             <a href="#trips" class="btn primary">Browse Trips</a>
             <button class="btn" id="btnOpenModal">Quick Book</button>
           </div>
-          <div class="card reveal" style="margin-top:1rem; display:flex; align-items:center; gap:.75rem;">
-            <strong class="badge">Festive Offer</strong>
-            <span id="countdown" aria-live="polite">Offer ends soon…</span>
+          <div class="card reveal countdown-card mt-3 flex gap-2">
+            <strong class="badge">🎉 Festive Offer</strong>
+            <span id="countdown" aria-live="polite">Offer ends soon...</span>
           </div>
         </div>
-        <div>
-          <img src="https://picsum.photos/seed/travelhero/800/500" alt="Traveler overlooking a scenic valley" loading="lazy" />
+        <div class="reveal">
+          <img src="https://picsum.photos/seed/travelhero/800/500" alt="Traveler overlooking a scenic valley"
+            loading="lazy" />
         </div>
       </div>
     </section>
 
-    <!-- Destinations -->
+    <!-- Destinations Section -->
     <section id="destinations">
       <div class="container">
-        <h2>Top Destinations</h2>
-        <div class="list" id="destList" aria-live="polite"></div>
+        <h2 class="reveal">Top Destinations</h2>
+        <div class="grid grid-3" id="destList" aria-live="polite"></div>
       </div>
     </section>
 
-    <!-- Testimonials Carousel with pictures -->
+    <!-- Testimonials Carousel -->
     <section id="testimonials">
       <div class="container">
-        <h2>What Travelers Say</h2>
+        <h2 class="reveal">What Travelers Say</h2>
         <div class="carousel" id="testimonialsCarousel" aria-label="Testimonials">
           <button class="prev" aria-label="Previous testimonial" id="tPrev">‹</button>
           <div class="carousel-track" tabindex="0">
-            <figure class="card testimonial" style="margin:0 .5rem;">
+            <figure class="card testimonial">
               <img class="avatar" src="https://picsum.photos/seed/face1/120/120" alt="Aishwarya S" />
               <div>
-                <blockquote>“Flawless booking and superb guides. The Ooty retreat was a dream!”</blockquote>
-                <figcaption>— Aishwarya S • ★★★★★</figcaption>
+                <blockquote>"Flawless booking and superb guides. The Ooty retreat was a dream!"</blockquote>
+                <figcaption>— Aishwarya S • ⭐⭐⭐⭐⭐</figcaption>
               </div>
             </figure>
-            <figure class="card testimonial" style="margin:0 .5rem;">
+            <figure class="card testimonial">
               <img class="avatar" src="https://picsum.photos/seed/face2/120/120" alt="Rahul K" />
               <div>
-                <blockquote>“Budget trip to Pondy was totally worth it. Clean stay and great food.”</blockquote>
-                <figcaption>— Rahul K • ★★★★☆</figcaption>
+                <blockquote>"Budget trip to Pondy was totally worth it. Clean stay and great food."</blockquote>
+                <figcaption>— Rahul K • ⭐⭐⭐⭐☆</figcaption>
               </div>
             </figure>
-            <figure class="card testimonial" style="margin:0 .5rem;">
+            <figure class="card testimonial">
               <img class="avatar" src="https://picsum.photos/seed/face3/120/120" alt="Nisha M" />
               <div>
-                <blockquote>“Backwater cruise was serene. Loved the punctual pickups.”</blockquote>
-                <figcaption>— Nisha M • ★★★★★</figcaption>
+                <blockquote>"Backwater cruise was serene. Loved the punctual pickups."</blockquote>
+                <figcaption>— Nisha M • ⭐⭐⭐⭐⭐</figcaption>
               </div>
             </figure>
           </div>
           <button class="next" aria-label="Next testimonial" id="tNext">›</button>
-          <div class="carousel-controls" aria-hidden="false">
-            <button class="dot" aria-label="Slide 1"></button>
+          <div class="carousel-controls">
+            <button class="dot active" aria-label="Slide 1"></button>
             <button class="dot" aria-label="Slide 2"></button>
             <button class="dot" aria-label="Slide 3"></button>
           </div>
@@ -175,17 +1200,46 @@
       </div>
     </section>
 
-    <!-- Trips -->
+    <!-- Video Section -->
+    <section id="video-guide" class="mt-3">
+      <div class="container">
+        <h2 class="reveal">Travel Video Guide</h2>
+        <div class="card reveal">
+          <h3>🎥 Explore Our Destinations</h3>
+          <p style="color: var(--muted); margin-bottom: 1rem;">Watch our curated travel guide to help plan your perfect
+            trip</p>
+          <div class="video-wrapper">
+            <video id="localVideo" width="100%" controls preload="metadata"
+              style="border-radius: var(--radius); width: 100%; height: auto; display: block;">
+              <source src="travel-video.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trips Section with Filters -->
     <section id="trips">
       <div class="container">
-        <h2>Trips (Search • Budget filter • Sort • Price • Itinerary)</h2>
-        <div class="toolbar" style="display:flex; gap:.75rem; flex-wrap:wrap; align-items:center;">
-          <input type="search" id="q" class="input" placeholder="Search trips…" aria-label="Search trips" />
+        <h2 class="reveal">Explore Trips</h2>
+        <div class="toolbar">
+          <input type="search" id="q" class="input" placeholder="🔍 Search trips..." aria-label="Search trips"
+            style="min-width: 250px;" />
           <select id="month" class="input" aria-label="Filter by month">
             <option value="">Any month</option>
-            <option>January</option><option>February</option><option>March</option><option>April</option>
-            <option>May</option><option>June</option><option>July</option><option>August</option>
-            <option>September</option><option>October</option><option>November</option><option>December</option>
+            <option>January</option>
+            <option>February</option>
+            <option>March</option>
+            <option>April</option>
+            <option>May</option>
+            <option>June</option>
+            <option>July</option>
+            <option>August</option>
+            <option>September</option>
+            <option>October</option>
+            <option>November</option>
+            <option>December</option>
           </select>
           <select id="sortTrips" class="input" aria-label="Sort by">
             <option value="name">Name</option>
@@ -193,9 +1247,10 @@
             <option value="price-desc">Price: High to Low</option>
             <option value="rating">Rating</option>
           </select>
-          <div class="range-wrap">
-            <input type="range" id="priceMax" class="range" min="500" max="25000" step="500" value="25000" aria-label="Max price" />
+          <div class="range-wrap" style="min-width: 200px;">
             <span class="range-bubble" id="priceBubble">₹25,000</span>
+            <input type="range" id="priceMax" class="range" min="500" max="25000" step="500" value="25000"
+              aria-label="Max price" />
           </div>
           <div class="seg" role="group" aria-label="Budget filter">
             <button class="seg-btn" data-budget="all" aria-pressed="true">All</button>
@@ -203,128 +1258,156 @@
             <button class="seg-btn" data-budget="mid">Mid (₹3k–₹10k)</button>
             <button class="seg-btn" data-budget="premium">Premium (&gt; ₹10k)</button>
           </div>
-          <div class="badge">Currency: <button class="btn" id="btnCurrency" aria-pressed="false">INR</button></div>
-          <button class="btn" id="btnItinerary" aria-controls="itineraryModal" aria-haspopup="dialog">🧳 Itinerary <span class="badge" id="itiCount">0</span></button>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <span style="font-weight: 500;">Currency:</span>
+            <button class="btn" id="btnCurrency" aria-pressed="false">INR</button>
+          </div>
+          <button class="btn primary" id="btnItinerary" aria-controls="itineraryModal" aria-haspopup="dialog">
+            🧳 Itinerary <span class="badge" id="itiCount" style="background: white; color: var(--primary);">0</span>
+          </button>
           <button class="btn" id="btnSaveFilters">💾 Save Filters</button>
         </div>
-        <div class="list" id="tripList" aria-live="polite"></div>
+        <div class="grid grid-3" id="tripList" aria-live="polite"></div>
       </div>
     </section>
 
-    <!-- Events -->
+    <!-- Events Section -->
     <section id="events">
       <div class="container">
-        <h2>Upcoming Events (Tours, Treks & Workshops)</h2>
+        <h2 class="reveal">Upcoming Events</h2>
         <div class="grid grid-2">
-          <div class="card">
-            <h3>Calendar</h3>
-            <div id="eventList" class="grid"></div>
+          <div class="card" style="background: linear-gradient(135deg, var(--surface) 0%, var(--bg) 100%);">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+              <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">📅</div>
+              <h3 style="margin: 0;">Event Calendar</h3>
+            </div>
+            <div id="eventList" class="grid" style="gap: 1rem;"></div>
           </div>
-          <div class="card">
-            <h3>Notifications</h3>
-            <p class="muted">Choose events and set reminders (local only).</p>
+          <div class="card" style="background: linear-gradient(135deg, var(--surface) 0%, var(--bg) 100%);">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+              <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🔔</div>
+              <h3 style="margin: 0;">My Reminders</h3>
+            </div>
+            <p style="color: var(--muted); margin-bottom: 1.5rem; font-size: 0.9375rem;">Set notifications for events you don't want to miss</p>
             <div id="eventActions"></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Booking + Contact details -->
+    <!-- Contact & Booking Section -->
     <section id="contact">
       <div class="container">
-        <h2>Quick Booking</h2>
+        <h2 class="reveal">Quick Booking</h2>
         <form id="bookingForm" class="card" novalidate>
           <div class="grid grid-2">
             <div>
-              <label for="fullName">Full name</label>
+              <label for="fullName">Full name *</label>
               <input id="fullName" class="input" required minlength="2" placeholder="Your name" />
-              <small id="nameHelp" class="badge" aria-live="polite"></small>
+              <small id="nameHelp" style="color: var(--danger); display: block; margin-top: 0.25rem;"></small>
             </div>
             <div>
-              <label for="email">Email</label>
+              <label for="email">Email *</label>
               <input id="email" class="input" type="email" required placeholder="you@example.com" />
-              <small id="emailHelp" class="badge" aria-live="polite"></small>
+              <small id="emailHelp" style="color: var(--danger); display: block; margin-top: 0.25rem;"></small>
             </div>
           </div>
-          <div class="grid grid-2">
+          <div class="grid grid-2 mt-2">
             <div>
-              <label for="date">Travel date</label>
+              <label for="date">Travel date *</label>
               <input id="date" class="input" type="date" required />
-              <small id="dateHelp" class="badge" aria-live="polite"></small>
+              <small id="dateHelp" style="color: var(--danger); display: block; margin-top: 0.25rem;"></small>
             </div>
             <div>
-              <label for="guests">Guests</label>
+              <label for="guests">Guests *</label>
               <input id="guests" class="input" type="number" min="1" max="10" value="2" required />
-              <small id="guestsHelp" class="badge" aria-live="polite"></small>
+              <small id="guestsHelp" style="color: var(--danger); display: block; margin-top: 0.25rem;"></small>
             </div>
           </div>
-          <div class="grid grid-2">
+          <div class="grid grid-2 mt-2">
             <div>
-              <label for="tripSelect">Select trip</label>
-              <select id="tripSelect" class="input" required></select>
-              <small id="tripHelp" class="badge" aria-live="polite"></small>
+              <label for="tripSelect">Select trip *</label>
+              <select id="tripSelect" class="input" required>
+                <option value="">Select...</option>
+              </select>
+              <small id="tripHelp" style="color: var(--danger); display: block; margin-top: 0.25rem;"></small>
             </div>
             <div>
               <label for="promo">Promo code (optional)</label>
               <input id="promo" class="input" placeholder="e.g., WELCOME500" />
-              <small class="badge">Try: WELCOME500 (₹500 off), BUDGET250 (₹250 off)</small>
+              <small class="badge mt-1">Try: WELCOME500 (₹500 off), BUDGET250 (₹250 off)</small>
             </div>
           </div>
-          <div style="display:flex; gap:.5rem; margin-top:1rem;">
-            <button type="submit" class="btn primary">Confirm Booking</button>
+          <div class="flex gap-2 mt-3">
+            <button type="submit" class="btn primary">
+              <span id="submitText">Confirm Booking</span>
+            </button>
             <button type="reset" class="btn">Reset</button>
           </div>
         </form>
 
-        <div class="card" style="margin-top:1rem;">
-          <h3>Contact Details</h3>
-          <p><strong>Email:</strong> <a id="contactEmail" href="mailto:hello@travelone.com">hello@travelone.com</a></p>
-          <p><strong>Phone:</strong> <a id="contactPhone" href="tel:+919876543210">+91 98765 43210</a></p>
+        <div class="card mt-3">
+          <h3>📞 Contact Details</h3>
+          <p><strong>Email:</strong> <a href="mailto:hello@travelone.com">hello@travelone.com</a></p>
+          <p><strong>Phone:</strong> <a href="tel:+919876543210">+91 98765 43210</a></p>
+          <p><strong>Address:</strong> 123 Marina Beach Road, Chennai, Tamil Nadu 600001</p>
         </div>
       </div>
     </section>
-
-    <!-- Modals -->
-    <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
-      <div class="modal" role="document">
-        <header>
-          <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:56px;">
-            <h3 id="modalTitle">Quick Book</h3>
-            <button class="btn" id="btnCloseModal" aria-label="Close">✕</button>
-          </div>
-        </header>
-        <div class="body">
-          <p>Use the booking form to confirm a trip or open your itinerary to manage selected trips.</p>
-          <p><button class="btn" id="openBooking">Open Booking Form</button> <button class="btn" id="openItinerary">Open Itinerary</button></p>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal-backdrop" id="itineraryModal" role="dialog" aria-modal="true" aria-labelledby="itiTitle" aria-hidden="true">
-      <div class="modal" role="document">
-        <header>
-          <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:56px;">
-            <h3 id="itiTitle">Your Itinerary</h3>
-            <button class="btn" id="btnCloseItinerary" aria-label="Close">✕</button>
-          </div>
-        </header>
-        <div class="body">
-          <div id="itineraryItems"></div>
-          <div style="display:flex; gap:.5rem; margin-top:1rem;">
-            <button class="btn success" id="btnDownloadItinerary">Download (.json)</button>
-            <button class="btn danger" id="btnClearItinerary">Clear</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <button class="btn scroll-top" id="scrollTop" aria-label="Scroll to top">↑ Top</button>
   </main>
 
+  <!-- Quick Book Modal -->
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle"
+    aria-hidden="true">
+    <div class="modal" role="document">
+      <header>
+        <div class="container flex" style="align-items:center; justify-content:space-between; height:56px;">
+          <h3 id="modalTitle">Quick Book</h3>
+          <button class="btn" id="btnCloseModal" aria-label="Close">✕</button>
+        </div>
+      </header>
+      <div class="body">
+        <p>Use the booking form to confirm a trip or open your itinerary to manage selected trips.</p>
+        <div class="flex gap-2 mt-3">
+          <button class="btn primary" id="openBooking">Open Booking Form</button>
+          <button class="btn" id="openItinerary">Open Itinerary</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Itinerary Modal -->
+  <div class="modal-backdrop" id="itineraryModal" role="dialog" aria-modal="true" aria-labelledby="itiTitle"
+    aria-hidden="true">
+    <div class="modal" role="document">
+      <header>
+        <div class="container flex" style="align-items:center; justify-content:space-between; height:56px;">
+          <h3 id="itiTitle">🧳 Your Itinerary</h3>
+          <button class="btn" id="btnCloseItinerary" aria-label="Close">✕</button>
+        </div>
+      </header>
+      <div class="body">
+        <div id="itineraryItems" class="grid"></div>
+        <div class="flex gap-2 mt-3">
+          <button class="btn danger" id="btnClearItinerary">🗑️ Clear All</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Scroll to Top Button -->
+  <button class="btn scroll-top primary" id="scrollTop" aria-label="Scroll to top">↑ Top</button>
+
+  <!-- Footer -->
   <footer>
-    <div class="container">
-      <p>© <span id="year"></span> TravelOne. Built with ❤️ in vanilla HTML, CSS & JS.</p>
+    <div class="container text-center">
+      <p>© <span id="year"></span> TravelOne. Built with ❤️ in Chennai.</p>
+      <p style="margin-top: 0.5rem; color: var(--muted); font-size: 0.875rem;">
+        Premium travel experiences • Transparent pricing • 24/7 support
+      </p>
     </div>
   </footer>
 
@@ -360,86 +1443,395 @@
 
   <script>
     // Utilities
-    const $ = (s, r=document)=>r.querySelector(s); const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
-    const debounce=(fn,ms=250)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}};
-    const currency={code:'INR',rate:1}; const money=(n)=>new Intl.NumberFormat('en-IN',{style:'currency',currency:currency.code}).format(n*currency.rate);
+    const $ = (s, r = document) => r.querySelector(s); const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+    const debounce = (fn, ms = 250) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms) } };
+    const currency = { code: 'INR', rate: 1 }; const money = (n) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: currency.code }).format(n * currency.rate);
 
     // Theme
-    const applyTheme=(t)=>{document.documentElement.setAttribute('data-theme',t);try{localStorage.setItem('theme',t)}catch{}};
-    const initTheme=()=>{const s=(()=>{try{return localStorage.getItem('theme')}catch{return null}})(); const d=matchMedia('(prefers-color-scheme: dark)').matches; applyTheme(s|| (d?'dark':'light'))};
+    const applyTheme = (t) => { document.documentElement.setAttribute('data-theme', t); try { localStorage.setItem('theme', t) } catch { } };
+    const initTheme = () => { const s = (() => { try { return localStorage.getItem('theme') } catch { return null } })(); const d = matchMedia('(prefers-color-scheme: dark)').matches; applyTheme(s || (d ? 'dark' : 'light')) };
 
     // Nav
-    const initNav=()=>{const b=$('#btnHamburger'), n=$('#primary-nav'); b.addEventListener('click',()=>{const o=n.classList.toggle('open'); b.setAttribute('aria-expanded',String(o)); if(o) n.querySelector('a')?.focus();}); document.addEventListener('click',(e)=>{if(!n.contains(e.target)&&e.target!==b&&n.classList.contains('open')){n.classList.remove('open'); b.setAttribute('aria-expanded','false')}}); document.addEventListener('keydown',(e)=>{if(e.key==='Escape'&&n.classList.contains('open')){n.classList.remove('open'); b.setAttribute('aria-expanded','false'); b.focus();}})};
+    const initNav = () => { const b = $('#btnHamburger'), n = $('#primary-nav'); b.addEventListener('click', () => { const o = n.classList.toggle('open'); b.setAttribute('aria-expanded', String(o)); if (o) n.querySelector('a')?.focus(); }); document.addEventListener('click', (e) => { if (!n.contains(e.target) && e.target !== b && n.classList.contains('open')) { n.classList.remove('open'); b.setAttribute('aria-expanded', 'false') } }); document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && n.classList.contains('open')) { n.classList.remove('open'); b.setAttribute('aria-expanded', 'false'); b.focus(); } }) };
 
     // Scroll helpers
-    let revealObserver; const observeReveals=()=>{const els=$$('.reveal'); if(revealObserver) els.forEach(el=>revealObserver.observe(el))};
-    const initReveal=()=>{revealObserver=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show'); revealObserver.unobserve(e.target)}})},{threshold:.2}); observeReveals()};
-    const initScrollTop=()=>{const btn=$('#scrollTop'); window.addEventListener('scroll',()=>{const y=scrollY; btn.classList.toggle('show',y>300); $('#progress').style.width=Math.min(100,(y/(document.body.scrollHeight-innerHeight))*100)+'%'}); btn.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}))};
+    let revealObserver; const observeReveals = () => { const els = $$('.reveal'); if (revealObserver) els.forEach(el => revealObserver.observe(el)) };
+    const initReveal = () => { revealObserver = new IntersectionObserver((es) => { es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); revealObserver.unobserve(e.target) } }) }, { threshold: .2 }); observeReveals() };
+    const initScrollTop = () => { const btn = $('#scrollTop'); window.addEventListener('scroll', () => { const y = scrollY; btn.classList.toggle('show', y > 300); $('#progress').style.width = Math.min(100, (y / (document.body.scrollHeight - innerHeight)) * 100) + '%' }); btn.addEventListener('click', () => scrollTo({ top: 0, behavior: 'smooth' })) };
 
     // Toast
-    const toast=(m,ms=2500)=>{const t=$('#toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),ms)};
+    const toast = (m, ms = 2500) => { const t = $('#toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), ms) };
 
     // Countdown
-    const initCountdown=()=>{const el=$('#countdown'); const end=new Date(); end.setDate(end.getDate()+10); const tick=()=>{const now=new Date(); const d=Math.max(0,Math.floor((end-now)/1000)); const days=Math.floor(d/86400), hrs=Math.floor((d%86400)/3600), mins=Math.floor((d%3600)/60); el.textContent=`Ends in ${days}d ${hrs}h ${mins}m`}; tick(); setInterval(tick,60000)};
+    const initCountdown = () => { const el = $('#countdown'); const end = new Date(); end.setDate(end.getDate() + 10); const tick = () => { const now = new Date(); const d = Math.max(0, Math.floor((end - now) / 1000)); const days = Math.floor(d / 86400), hrs = Math.floor((d % 86400) / 3600), mins = Math.floor((d % 3600) / 60); el.textContent = `Ends in ${days}d ${hrs}h ${mins}m` }; tick(); setInterval(tick, 60000) };
 
     // Currency
-    const initCurrency=()=>{$('#btnCurrency').addEventListener('click',()=>{const toUSD=currency.code==='INR'; currency.code=toUSD?'USD':'INR'; currency.rate=toUSD?(1/83):1; $('#btnCurrency').textContent=currency.code; renderTrips(); updateTripSelect(); toast(`Currency: ${currency.code}`)} )};
+    const initCurrency = () => { $('#btnCurrency').addEventListener('click', () => { const toUSD = currency.code === 'INR'; currency.code = toUSD ? 'USD' : 'INR'; currency.rate = toUSD ? (1 / 83) : 1; $('#btnCurrency').textContent = currency.code; renderTrips(); updateTripSelect(); toast(`Currency: ${currency.code}`) }) };
 
     // Data state
-    const state={destinations:[], trips:[], events:[], itinerary:[], filters:{}};
-    const loadData=()=>{ state.destinations=JSON.parse($('#data-destinations').textContent); state.trips=JSON.parse($('#data-trips').textContent); state.events=JSON.parse($('#data-events').textContent); };
+    const state = { destinations: [], trips: [], events: [], itinerary: [], filters: {} };
+    const loadData = () => { state.destinations = JSON.parse($('#data-destinations').textContent); state.trips = JSON.parse($('#data-trips').textContent); state.events = JSON.parse($('#data-events').textContent); };
 
     // Destinations
-    const renderDestinations=()=>{const list=$('#destList'); list.innerHTML=''; state.destinations.forEach(d=>{const card=document.createElement('div'); card.className='card reveal'; card.innerHTML=`<img src="${d.img}" alt="${d.name}" loading="lazy"/><h3>${d.name}</h3><p class="badge">${d.region}</p><button class="btn" data-see="${d.id}">See trips</button>`; list.appendChild(card)}); observeReveals(); $$('#destList [data-see]').forEach(b=>b.addEventListener('click',()=>{ location.hash='#trips'; const dest=state.destinations.find(x=>x.id==+b.dataset.see); $('#q').value=dest.name.split(' ')[0]; renderTrips(); }))};
+    const renderDestinations = () => {
+      const list = $('#destList');
+      list.innerHTML = '';
+      state.destinations.forEach(d => {
+        const card = document.createElement('div');
+        card.className = 'card reveal';
+        card.innerHTML = `<img src="${d.img}" alt="${d.name}" loading="lazy"/><h3>${d.name}</h3><p class="badge">${d.region}</p><button class="btn mt-2" data-see="${d.id}">See trips</button>`;
+        list.appendChild(card)
+      });
+      observeReveals();
+      $$('#destList [data-see]').forEach(b => b.addEventListener('click', () => {
+        const dest = state.destinations.find(x => x.id == +b.dataset.see);
+        $('#q').value = dest.name.split(' ')[0];
+        renderTrips();
 
+        // Smooth scroll to trips section
+        setTimeout(() => {
+          document.querySelector('#trips').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }, 100);
+      }))
+    };
     // Budget segmented control
-    let budgetMode='all';
-    const initBudgetSeg=()=>{ $$('.seg-btn').forEach(btn=>btn.addEventListener('click',()=>{ $$('.seg-btn').forEach(x=>x.setAttribute('aria-pressed','false')); btn.setAttribute('aria-pressed','true'); budgetMode=btn.dataset.budget; renderTrips(); })); };
-    const inBudget=(price)=>{ if(budgetMode==='budget') return price<3000; if(budgetMode==='mid') return price>=3000 && price<=10000; if(budgetMode==='premium') return price>10000; return true; };
+    let budgetMode = 'all';
+    const initBudgetSeg = () => { $$('.seg-btn').forEach(btn => btn.addEventListener('click', () => { $$('.seg-btn').forEach(x => x.setAttribute('aria-pressed', 'false')); btn.setAttribute('aria-pressed', 'true'); budgetMode = btn.dataset.budget; renderTrips(); })); };
+    const inBudget = (price) => { if (budgetMode === 'budget') return price < 3000; if (budgetMode === 'mid') return price >= 3000 && price <= 10000; if (budgetMode === 'premium') return price > 10000; return true; };
 
     // Trips + itinerary
-    const priceBubble=()=>{const r=$('#priceMax'), b=$('#priceBubble'); const v=Number(r.value); b.textContent=money(v); const pct=(v-r.min)/(r.max-r.min); b.style.left=(r.offsetWidth*pct)+'px'};
-    const renderTrips=()=>{ const list=$('#tripList'); const q=$('#q').value.trim().toLowerCase(); const m=$('#month').value; const s=$('#sortTrips').value; const max=Number($('#priceMax').value); let items=state.trips.filter(t=>(!m||t.month===m)&&(!q||t.name.toLowerCase().includes(q))&&t.price<=max&&inBudget(t.price)); if(s==='name') items.sort((a,b)=>a.name.localeCompare(b.name)); if(s==='price-asc') items.sort((a,b)=>a.price-b.price); if(s==='price-desc') items.sort((a,b)=>b.price-a.price); if(s==='rating') items.sort((a,b)=>b.rating-a.rating); list.innerHTML=''; if(!items.length){ list.innerHTML='<p class="badge">No trips match your filters.</p>'; return;} items.forEach(t=>{ const added=state.itinerary.some(x=>x.id===t.id); const card=document.createElement('div'); card.className='card reveal'; card.innerHTML=`<img src="${t.img}" alt="${t.name}" loading="lazy"/><h3>${t.name}</h3><p class="badge">${t.month} • ${t.days} days • ★ ${t.rating.toFixed(1)}</p><p><strong>${money(t.price)}</strong></p><div style="display:flex;gap:.5rem;"><button class="btn primary" data-add="${t.id}">${added?'Added':'Add to Itinerary'}</button><button class="btn" data-book="${t.id}">Book</button><button class="btn" data-details="${t.id}">Details</button></div>`; list.appendChild(card); }); observeReveals(); $$('#tripList [data-add]').forEach(b=>b.addEventListener('click',()=>addToItinerary(+b.dataset.add))); $$('#tripList [data-book]').forEach(b=>b.addEventListener('click',()=>{ $('#tripSelect').value=String(+b.dataset.book); location.hash='#contact'; toast('Trip preselected in booking form'); })); $$('#tripList [data-details]').forEach(b=>b.addEventListener('click',()=>showTripDetails(+b.dataset.details))); updateTripSelect(); priceBubble(); updateItiCount(); };
-    const updateTripSelect=()=>{ const sel=$('#tripSelect'); sel.innerHTML='<option value="">Select…</option>'+state.trips.map(t=>`<option value="${t.id}">${t.name} — ${money(t.price)}</option>`).join(''); };
-    const updateItiCount=()=>{ $('#itiCount').textContent=String(state.itinerary.length) };
-    const persistItinerary=()=>{ try{localStorage.setItem('itinerary',JSON.stringify(state.itinerary))}catch{} };
-    const loadItinerary=()=>{ try{state.itinerary=JSON.parse(localStorage.getItem('itinerary')||'[]')}catch{state.itinerary=[]} };
-    const addToItinerary=(id)=>{ const t=state.trips.find(x=>x.id===id); if(!t) return; if(!state.itinerary.some(x=>x.id===id)){ state.itinerary.push({id:t.id,name:t.name,price:t.price}); persistItinerary(); toast(`${t.name} added to itinerary`); renderTrips(); } };
-    const removeFromItinerary=(id)=>{ state.itinerary=state.itinerary.filter(x=>x.id!==id); persistItinerary(); renderItinerary(); renderTrips(); };
-    const moveIti=(id,dir)=>{ const i=state.itinerary.findIndex(x=>x.id===id); if(i<0) return; const ni=Math.max(0,Math.min(state.itinerary.length-1,i+dir)); if(i!==ni){ const [it]=state.itinerary.splice(i,1); state.itinerary.splice(ni,0,it); persistItinerary(); renderItinerary(); } };
-    const renderItinerary=()=>{ const box=$('#itineraryItems'); box.innerHTML=''; if(!state.itinerary.length){ box.innerHTML='<p class="badge">Your itinerary is empty.</p>'; return; } state.itinerary.forEach(x=>{ const row=document.createElement('div'); row.style.display='flex'; row.style.justifyContent='space-between'; row.style.alignItems='center'; row.style.gap='.5rem'; row.innerHTML=`<div><strong>${x.name}</strong></div><div>${money(x.price)}</div><div><button class="btn" data-remove="${x.id}">Remove</button><button class="btn" data-up="${x.id}">↑</button><button class="btn" data-down="${x.id}">↓</button></div>`; box.appendChild(row) }); $$('#itineraryItems [data-remove]').forEach(b=>b.addEventListener('click',()=>removeFromItinerary(+b.dataset.remove))); $$('#itineraryItems [data-up]').forEach(b=>b.addEventListener('click',()=>moveIti(+b.dataset.up,-1))); $$('#itineraryItems [data-down]').forEach(b=>b.addEventListener('click',()=>moveIti(+b.dataset.down,1))); updateItiCount(); };
-    const showTripDetails=(id)=>{ const t=state.trips.find(x=>x.id===id); const m=$('#modalBackdrop'); m.querySelector('#modalTitle').textContent=t.name; m.querySelector('.body').innerHTML=`<p><strong>Month:</strong> ${t.month} • <strong>Days:</strong> ${t.days} • <strong>Rating:</strong> ★ ${t.rating.toFixed(1)}</p><p><strong>Price:</strong> ${money(t.price)}</p><p>Curated experience with local guides, comfy stays, and flexible itineraries.</p>`; openModal('modalBackdrop'); };
+    const priceBubble = () => { const r = $('#priceMax'), b = $('#priceBubble'); const v = Number(r.value); b.textContent = money(v); const pct = (v - r.min) / (r.max - r.min); b.style.left = (r.offsetWidth * pct) + 'px' };
+    const renderTrips = () => { const list = $('#tripList'); const q = $('#q').value.trim().toLowerCase(); const m = $('#month').value; const s = $('#sortTrips').value; const max = Number($('#priceMax').value); let items = state.trips.filter(t => (!m || t.month === m) && (!q || t.name.toLowerCase().includes(q)) && t.price <= max && inBudget(t.price)); if (s === 'name') items.sort((a, b) => a.name.localeCompare(b.name)); if (s === 'price-asc') items.sort((a, b) => a.price - b.price); if (s === 'price-desc') items.sort((a, b) => b.price - a.price); if (s === 'rating') items.sort((a, b) => b.rating - a.rating); list.innerHTML = ''; if (!items.length) { list.innerHTML = '<p class="badge">No trips match your filters.</p>'; return; } items.forEach(t => { const added = state.itinerary.some(x => x.id === t.id); const card = document.createElement('div'); card.className = 'card reveal'; card.innerHTML = `<img src="${t.img}" alt="${t.name}" loading="lazy"/><h3>${t.name}</h3><p class="badge">${t.month} • ${t.days} days • ★ ${t.rating.toFixed(1)}</p><p><strong>${money(t.price)}</strong></p><div style="display:flex;gap:.5rem;"><button class="btn primary" data-add="${t.id}">${added ? 'Added' : 'Add to Itinerary'}</button><button class="btn" data-book="${t.id}">Book</button><button class="btn" data-details="${t.id}">Details</button></div>`; list.appendChild(card); }); observeReveals(); $$('#tripList [data-add]').forEach(b => b.addEventListener('click', () => addToItinerary(+b.dataset.add))); $$('#tripList [data-book]').forEach(b => b.addEventListener('click', () => { $('#tripSelect').value = String(+b.dataset.book); location.hash = '#contact'; toast('Trip preselected in booking form'); })); $$('#tripList [data-details]').forEach(b => b.addEventListener('click', () => showTripDetails(+b.dataset.details))); updateTripSelect(); priceBubble(); updateItiCount(); };
+    const updateTripSelect = () => { const sel = $('#tripSelect'); sel.innerHTML = '<option value="">Select…</option>' + state.trips.map(t => `<option value="${t.id}">${t.name} — ${money(t.price)}</option>`).join(''); };
+    const updateItiCount = () => { $('#itiCount').textContent = String(state.itinerary.length) };
+    const persistItinerary = () => { try { localStorage.setItem('itinerary', JSON.stringify(state.itinerary)) } catch { } };
+    const loadItinerary = () => { try { state.itinerary = JSON.parse(localStorage.getItem('itinerary') || '[]') } catch { state.itinerary = [] } };
+    const addToItinerary = (id) => { const t = state.trips.find(x => x.id === id); if (!t) return; if (!state.itinerary.some(x => x.id === id)) { state.itinerary.push({ id: t.id, name: t.name, price: t.price }); persistItinerary(); toast(`${t.name} added to itinerary`); renderTrips(); } };
+    const removeFromItinerary = (id) => { state.itinerary = state.itinerary.filter(x => x.id !== id); persistItinerary(); renderItinerary(); renderTrips(); };
+    const moveIti = (id, dir) => { const i = state.itinerary.findIndex(x => x.id === id); if (i < 0) return; const ni = Math.max(0, Math.min(state.itinerary.length - 1, i + dir)); if (i !== ni) { const [it] = state.itinerary.splice(i, 1); state.itinerary.splice(ni, 0, it); persistItinerary(); renderItinerary(); } };
+    const renderItinerary = () => { const box = $('#itineraryItems'); box.innerHTML = ''; if (!state.itinerary.length) { box.innerHTML = '<p class="badge">Your itinerary is empty.</p>'; return; } state.itinerary.forEach(x => { const row = document.createElement('div'); row.style.display = 'flex'; row.style.justifyContent = 'space-between'; row.style.alignItems = 'center'; row.style.gap = '.5rem'; row.innerHTML = `<div><strong>${x.name}</strong></div><div>${money(x.price)}</div><div><button class="btn" data-remove="${x.id}">Remove</button><button class="btn" data-up="${x.id}">↑</button><button class="btn" data-down="${x.id}">↓</button></div>`; box.appendChild(row) }); $$('#itineraryItems [data-remove]').forEach(b => b.addEventListener('click', () => removeFromItinerary(+b.dataset.remove))); $$('#itineraryItems [data-up]').forEach(b => b.addEventListener('click', () => moveIti(+b.dataset.up, -1))); $$('#itineraryItems [data-down]').forEach(b => b.addEventListener('click', () => moveIti(+b.dataset.down, 1))); updateItiCount(); };
+    const showTripDetails = (id) => { const t = state.trips.find(x => x.id === id); const m = $('#modalBackdrop'); m.querySelector('#modalTitle').textContent = t.name; m.querySelector('.body').innerHTML = `<p><strong>Month:</strong> ${t.month} • <strong>Days:</strong> ${t.days} • <strong>Rating:</strong> ★ ${t.rating.toFixed(1)}</p><p><strong>Price:</strong> ${money(t.price)}</p><p>Curated experience with local guides, comfy stays, and flexible itineraries.</p>`; openModal('modalBackdrop'); };
 
     // Events & reminders
-    const renderEvents=()=>{ const list=$('#eventList'), actions=$('#eventActions'); list.innerHTML=''; actions.innerHTML=''; state.events.forEach(ev=>{ const date=new Date(ev.date); const card=document.createElement('div'); card.className='card reveal'; card.innerHTML=`<strong>${ev.title}</strong><p class="badge">${date.toDateString()} • ${ev.type}</p><button class="btn" data-remind="${ev.id}">Set reminder</button>`; list.appendChild(card) }); observeReveals(); $$('#eventList [data-remind]').forEach(b=>b.addEventListener('click',()=>setReminder(+b.dataset.remind))); };
-    const setReminder=(id)=>{ const ev=state.events.find(x=>x.id===id); if(!ev) return; try{ const rs=JSON.parse(localStorage.getItem('reminders')||'[]'); if(!rs.some(x=>x.id===id)){ rs.push({id,title:ev.title,date:ev.date}); localStorage.setItem('reminders',JSON.stringify(rs)); toast('Reminder saved'); } else toast('Reminder already set'); }catch{ toast('Unable to save reminder'); } renderReminderActions(); };
-    const renderReminderActions=()=>{ const actions=$('#eventActions'); actions.innerHTML=''; let rs=[]; try{ rs=JSON.parse(localStorage.getItem('reminders')||'[]'); }catch{ rs=[] } if(!rs.length){ actions.innerHTML='<p class="badge">No reminders yet.</p>'; return; } rs.forEach(r=>{ const row=document.createElement('div'); row.style.display='flex'; row.style.justifyContent='space-between'; row.style.alignItems='center'; row.style.gap='.5rem'; row.innerHTML=`<div><strong>${r.title}</strong> • ${new Date(r.date).toDateString()}</div><div><button class="btn" data-ics="${r.id}">Download .ics</button><button class="btn" data-del="${r.id}">Delete</button></div>`; actions.appendChild(row) }); $$('#eventActions [data-del]').forEach(b=>b.addEventListener('click',()=>{ let rs=JSON.parse(localStorage.getItem('reminders')||'[]'); rs=rs.filter(x=>x.id!==+b.dataset.del); localStorage.setItem('reminders',JSON.stringify(rs)); toast('Reminder deleted'); renderReminderActions(); })); $$('#eventActions [data-ics]').forEach(b=>b.addEventListener('click',()=>downloadICS(+b.dataset.ics))); };
-    const downloadICS=(id)=>{ const ev=state.events.find(x=>x.id===id); if(!ev) return; const dt=new Date(ev.date); const ds=dt.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z'; const ics=`BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTAMP:${ds}\nDTSTART:${ds}\nSUMMARY:${ev.title}\nEND:VEVENT\nEND:VCALENDAR`; const blob=new Blob([ics],{type:'text/calendar'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`${ev.title.replace(/\s+/g,'_')}.ics`; a.click(); URL.revokeObjectURL(a.href); };
+    const renderEvents = () => { const list = $('#eventList'), actions = $('#eventActions'); list.innerHTML = ''; actions.innerHTML = ''; state.events.forEach(ev => { const date = new Date(ev.date); const card = document.createElement('div'); card.className = 'card reveal'; card.innerHTML = `<strong>${ev.title}</strong><p class="badge">${date.toDateString()} • ${ev.type}</p><button class="btn mt-2" data-remind="${ev.id}">Set reminder</button>`; list.appendChild(card) }); observeReveals(); $$('#eventList [data-remind]').forEach(b => b.addEventListener('click', () => setReminder(+b.dataset.remind))); };
+    const setReminder = (id) => { const ev = state.events.find(x => x.id === id); if (!ev) return; try { const rs = JSON.parse(localStorage.getItem('reminders') || '[]'); if (!rs.some(x => x.id === id)) { rs.push({ id, title: ev.title, date: ev.date }); localStorage.setItem('reminders', JSON.stringify(rs)); toast('Reminder saved'); } else toast('Reminder already set'); } catch { toast('Unable to save reminder'); } renderReminderActions(); };
+    const renderReminderActions = () => { const actions = $('#eventActions'); actions.innerHTML = ''; let rs = []; try { rs = JSON.parse(localStorage.getItem('reminders') || '[]'); } catch { rs = [] } if (!rs.length) { actions.innerHTML = '<p class="badge">No reminders yet.</p>'; return; } rs.forEach(r => { const row = document.createElement('div'); row.style.display = 'flex'; row.style.justifyContent = 'space-between'; row.style.alignItems = 'center'; row.style.gap = '.5rem'; row.innerHTML = `<div><strong>${r.title}</strong> • ${new Date(r.date).toDateString()}</div><div><button class="btn" data-del="${r.id}">Delete</button></div>`; actions.appendChild(row) }); $$('#eventActions [data-del]').forEach(b => b.addEventListener('click', () => { let rs = JSON.parse(localStorage.getItem('reminders') || '[]'); rs = rs.filter(x => x.id !== +b.dataset.del); localStorage.setItem('reminders', JSON.stringify(rs)); toast('Reminder deleted'); renderReminderActions(); })); $$('#eventActions [data-ics]').forEach(b => b.addEventListener('click', () => downloadICS(+b.dataset.ics))); };
+    const downloadICS = (id) => { const ev = state.events.find(x => x.id === id); if (!ev) return; const dt = new Date(ev.date); const ds = dt.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'; const ics = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTAMP:${ds}\nDTSTART:${ds}\nSUMMARY:${ev.title}\nEND:VEVENT\nEND:VCALENDAR`; const blob = new Blob([ics], { type: 'text/calendar' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${ev.title.replace(/\s+/g, '_')}.ics`; a.click(); URL.revokeObjectURL(a.href); };
 
     // Booking + promo code
-    const initBooking=()=>{ const f=$('#bookingForm'), name=$('#fullName'), email=$('#email'), date=$('#date'), guests=$('#guests'), trip=$('#tripSelect'), promo=$('#promo'); const nameH=$('#nameHelp'), emailH=$('#emailHelp'), dateH=$('#dateHelp'), guestsH=$('#guestsHelp'), tripH=$('#tripHelp'); const today=new Date().toISOString().split('T')[0]; date.min=today; const vName=()=>{const ok=name.value.trim().length>=2; nameH.textContent=ok?'':'Enter at least 2 characters.'; return ok}; const vEmail=()=>{const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim()); emailH.textContent=ok?'':'Enter a valid email.'; return ok}; const vDate=()=>{const ok=!!date.value; dateH.textContent=ok?'':'Pick a date.'; return ok}; const vGuests=()=>{const n=+guests.value; const ok=n>=1&&n<=10; guestsH.textContent=ok?'':'Guests must be 1–10.'; return ok}; const vTrip=()=>{const ok=!!trip.value; tripH.textContent=ok?'':'Select a trip.'; return ok}; name.addEventListener('input',debounce(vName,200)); email.addEventListener('input',debounce(vEmail,200)); date.addEventListener('change',vDate); guests.addEventListener('input',vGuests); trip.addEventListener('change',vTrip); f.addEventListener('submit',(e)=>{ e.preventDefault(); const ok=vName() & vEmail() & vDate() & vGuests() & vTrip(); if(!ok) return; const t=state.trips.find(x=>String(x.id)===trip.value); let total=t?t.price:0; const code=promo.value.trim().toUpperCase(); if(code==='WELCOME500') total=Math.max(0,total-500); if(code==='BUDGET250') total=Math.max(0,total-250); toast(`Booking confirmed! Total: ${money(total)} (${currency.code})`); f.reset(); }); };
+    const initBooking = () => {
+      const f = $('#bookingForm'), name = $('#fullName'), email = $('#email'), date = $('#date'), guests = $('#guests'), trip = $('#tripSelect'), promo = $('#promo');
+      const nameH = $('#nameHelp'), emailH = $('#emailHelp'), dateH = $('#dateHelp'), guestsH = $('#guestsHelp'), tripH = $('#tripHelp');
+      const today = new Date().toISOString().split('T')[0];
+      date.min = today;
 
+      const vName = () => { const ok = name.value.trim().length >= 2; nameH.textContent = ok ? '' : 'Enter at least 2 characters.'; return ok };
+      const vEmail = () => { const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim()); emailH.textContent = ok ? '' : 'Enter a valid email.'; return ok };
+      const vDate = () => { const ok = !!date.value; dateH.textContent = ok ? '' : 'Pick a date.'; return ok };
+      const vGuests = () => { const n = +guests.value; const ok = n >= 1 && n <= 10; guestsH.textContent = ok ? '' : 'Guests must be 1–10.'; return ok };
+      const vTrip = () => { const ok = !!trip.value; tripH.textContent = ok ? '' : 'Select a trip.'; return ok };
+
+      name.addEventListener('input', debounce(vName, 200));
+      email.addEventListener('input', debounce(vEmail, 200));
+      date.addEventListener('change', vDate);
+      guests.addEventListener('input', vGuests);
+      trip.addEventListener('change', vTrip);
+
+      f.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const ok = vName() & vEmail() & vDate() & vGuests() & vTrip();
+        if (!ok) return;
+
+        const t = state.trips.find(x => String(x.id) === trip.value);
+        let total = t ? t.price : 0;
+        const code = promo.value.trim().toUpperCase();
+        let discount = 0;
+
+        if (code === 'WELCOME500') discount = 500;
+        if (code === 'BUDGET250') discount = 250;
+
+        total = Math.max(0, total - discount);
+
+        // Store booking data for receipt
+        const bookingData = {
+          bookingId: 'TRV' + Date.now(),
+          customerName: name.value.trim(),
+          email: email.value.trim(),
+          travelDate: date.value,
+          guests: guests.value,
+          tripName: t.name,
+          tripId: t.id,
+          basePrice: t.price,
+          promoCode: code || 'N/A',
+          discount: discount,
+          totalAmount: total,
+          bookingDate: new Date().toLocaleDateString('en-IN'),
+          bookingTime: new Date().toLocaleTimeString('en-IN')
+        };
+
+        // Show confirmation modal with download receipt button
+        showBookingConfirmation(bookingData);
+
+        f.reset();
+      });
+    };
+
+    // Booking confirmation with receipt download
+    const showBookingConfirmation = (data) => {
+      const m = $('#modalBackdrop');
+      m.querySelector('#modalTitle').textContent = '✅ Booking Confirmed!';
+      m.querySelector('.body').innerHTML = `
+    <div style="text-align: center; padding: 1rem;">
+      <div style="font-size: 4rem; margin-bottom: 1rem;">🎉</div>
+      <h3 style="color: var(--accent); margin-bottom: 1rem;">Your booking has been confirmed!</h3>
+      <p style="margin-bottom: 0.5rem;"><strong>Booking ID:</strong> ${data.bookingId}</p>
+      <p style="margin-bottom: 0.5rem;"><strong>Trip:</strong> ${data.tripName}</p>
+      <p style="margin-bottom: 0.5rem;"><strong>Total Amount:</strong> ${money(data.totalAmount)}</p>
+      <p style="color: var(--muted); margin: 1.5rem 0;">A confirmation email has been sent to ${data.email}</p>
+      <div class="flex gap-2" style="justify-content: center; margin-top: 2rem;">
+        <button class="btn primary" id="btnDownloadReceipt">📄 Download Receipt</button>
+        <button class="btn success" id="btnDownloadPDF">📥 Download PDF</button>
+        <button class="btn" id="btnCloseConfirm">Close</button>
+      </div>
+    </div>
+  `;
+
+      openModal('modalBackdrop');
+
+      // Download receipt as text file
+      $('#btnDownloadReceipt').addEventListener('click', () => downloadReceipt(data, 'txt'));
+
+      // Download receipt as HTML/PDF-ready file
+      $('#btnDownloadPDF').addEventListener('click', () => downloadReceipt(data, 'html'));
+
+      $('#btnCloseConfirm').addEventListener('click', () => closeModal('modalBackdrop'));
+    };
+
+    // Generate and download receipt
+    const downloadReceipt = (data, format) => {
+      if (format === 'txt') {
+        // Plain text receipt
+        const receipt = `
+═══════════════════════════════════════════════
+            TRAVELONE BOOKING RECEIPT
+═══════════════════════════════════════════════
+
+Booking ID: ${data.bookingId}
+Booking Date: ${data.bookingDate} at ${data.bookingTime}
+
+───────────────────────────────────────────────
+CUSTOMER DETAILS
+───────────────────────────────────────────────
+Name: ${data.customerName}
+Email: ${data.email}
+Number of Guests: ${data.guests}
+
+───────────────────────────────────────────────
+TRIP DETAILS
+───────────────────────────────────────────────
+Trip Name: ${data.tripName}
+Trip ID: ${data.tripId}
+Travel Date: ${new Date(data.travelDate).toLocaleDateString('en-IN')}
+
+───────────────────────────────────────────────
+PAYMENT SUMMARY
+───────────────────────────────────────────────
+Base Price:          ${money(data.basePrice)}
+Promo Code:          ${data.promoCode}
+Discount:            ${money(data.discount)}
+───────────────────────────────────────────────
+TOTAL AMOUNT:        ${money(data.totalAmount)}
+═══════════════════════════════════════════════
+
+Thank you for choosing TravelOne!
+For support, contact: hello@travelone.com
+Phone: +91 98765 43210
+
+═══════════════════════════════════════════════
+    `;
+
+        const blob = new Blob([receipt], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `TravelOne_Receipt_${data.bookingId}.txt`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+        toast('Receipt downloaded successfully!');
+
+      } else if (format === 'html') {
+        // HTML receipt (can be saved as PDF)
+        const htmlReceipt = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>TravelOne Receipt - ${data.bookingId}</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; color: #333; }
+    .header { text-align: center; border-bottom: 3px solid #3b82f6; padding-bottom: 20px; margin-bottom: 30px; }
+    .header h1 { color: #3b82f6; margin: 0; font-size: 2rem; }
+    .header p { color: #64748b; margin: 5px 0; }
+    .section { margin: 30px 0; padding: 20px; background: #f8fafc; border-radius: 10px; }
+    .section h2 { color: #3b82f6; margin-top: 0; font-size: 1.2rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+    .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e2e8f0; }
+    .row:last-child { border-bottom: none; }
+    .label { font-weight: 600; color: #475569; }
+    .value { color: #0f172a; }
+    .total { background: linear-gradient(135deg, #3b82f6, #10b981); color: white; padding: 20px; border-radius: 10px; text-align: center; font-size: 1.5rem; font-weight: bold; margin-top: 30px; }
+    .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 2px solid #e2e8f0; color: #64748b; }
+    .success-badge { display: inline-block; background: #10b981; color: white; padding: 8px 20px; border-radius: 20px; font-weight: 600; margin: 20px 0; }
+    @media print { body { margin: 0; } }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>✈️ TRAVELONE</h1>
+    <p>Premium Tours & Travels Experience</p>
+    <div class="success-badge">✅ BOOKING CONFIRMED</div>
+    <p><strong>Booking ID:</strong> ${data.bookingId}</p>
+    <p>${data.bookingDate} at ${data.bookingTime}</p>
+  </div>
+
+  <div class="section">
+    <h2>👤 Customer Details</h2>
+    <div class="row">
+      <span class="label">Name:</span>
+      <span class="value">${data.customerName}</span>
+    </div>
+    <div class="row">
+      <span class="label">Email:</span>
+      <span class="value">${data.email}</span>
+    </div>
+    <div class="row">
+      <span class="label">Number of Guests:</span>
+      <span class="value">${data.guests}</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🗺️ Trip Details</h2>
+    <div class="row">
+      <span class="label">Trip Name:</span>
+      <span class="value">${data.tripName}</span>
+    </div>
+    <div class="row">
+      <span class="label">Trip ID:</span>
+      <span class="value">${data.tripId}</span>
+    </div>
+    <div class="row">
+      <span class="label">Travel Date:</span>
+      <span class="value">${new Date(data.travelDate).toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>💰 Payment Summary</h2>
+    <div class="row">
+      <span class="label">Base Price:</span>
+      <span class="value">${money(data.basePrice)}</span>
+    </div>
+    <div class="row">
+      <span class="label">Promo Code:</span>
+      <span class="value">${data.promoCode}</span>
+    </div>
+    <div class="row">
+      <span class="label">Discount:</span>
+      <span class="value">- ${money(data.discount)}</span>
+    </div>
+  </div>
+
+  <div class="total">
+    TOTAL AMOUNT: ${money(data.totalAmount)}
+  </div>
+
+  <div class="footer">
+    <p><strong>Thank you for choosing TravelOne!</strong></p>
+    <p>📧 Email: hello@travelone.com | 📞 Phone: +91 98765 43210</p>
+    <p>📍 123 Marina Beach Road, Chennai, Tamil Nadu 600001</p>
+    <p style="margin-top: 20px; font-size: 0.9rem;">This is a computer-generated receipt and does not require a signature.</p>
+  </div>
+</body>
+</html>
+    `;
+
+        const blob = new Blob([htmlReceipt], { type: 'text/html' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `TravelOne_Receipt_${data.bookingId}.html`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+        toast('PDF-ready receipt downloaded! Open in browser and print to PDF.');
+      }
+    };
     // Modals
-    const openModal=(id)=>{ const b=document.getElementById(id); b.classList.add('open'); b.setAttribute('aria-hidden','false'); const fs=$$('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])',b); const first=fs[0], last=fs[fs.length-1]; const trap=(e)=>{ if(e.key==='Tab'){ if(e.shiftKey && document.activeElement===first){e.preventDefault(); last.focus()} else if(!e.shiftKey && document.activeElement===last){e.preventDefault(); first.focus()} } if(e.key==='Escape') closeModal(id) }; b.addEventListener('keydown',trap); b.addEventListener('click',(e)=>{ if(e.target===b) closeModal(id) }); first?.focus(); };
-    const closeModal=(id)=>{ const b=document.getElementById(id); b.classList.remove('open'); b.setAttribute('aria-hidden','true') };
+    const openModal = (id) => { const b = document.getElementById(id); b.classList.add('open'); b.setAttribute('aria-hidden', 'false'); const fs = $$('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])', b); const first = fs[0], last = fs[fs.length - 1]; const trap = (e) => { if (e.key === 'Tab') { if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus() } else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus() } } if (e.key === 'Escape') closeModal(id) }; b.addEventListener('keydown', trap); b.addEventListener('click', (e) => { if (e.target === b) closeModal(id) }); first?.focus(); };
+    const closeModal = (id) => { const b = document.getElementById(id); b.classList.remove('open'); b.setAttribute('aria-hidden', 'true') };
 
     // Testimonials carousel (auto-rotate + pause on hover/focus)
-    const initTestimonials=()=>{ const root=$('#testimonialsCarousel'); const track=root.querySelector('.carousel-track'); const dots=$$('.dot',root); const prev=$('#tPrev'), next=$('#tNext'); let idx=0, timer; const go=(i)=>{ idx=Math.max(0,Math.min(dots.length-1,i)); track.scrollTo({left: idx*track.clientWidth, behavior:'smooth'}); dots.forEach((d,j)=>d.classList.toggle('active',j===idx)); }; const play=()=>{ stop(); timer=setInterval(()=>go((idx+1)%dots.length), 3500) }; const stop=()=>{ if(timer) clearInterval(timer) }; window.addEventListener('resize',()=>go(idx)); dots.forEach((d,i)=>d.addEventListener('click',()=>go(i))); prev.addEventListener('click',()=>go(idx-1)); next.addEventListener('click',()=>go(idx+1)); track.addEventListener('keydown',(e)=>{ if(e.key==='ArrowRight') go(idx+1); if(e.key==='ArrowLeft') go(idx-1); }); root.addEventListener('mouseenter',stop); root.addEventListener('mouseleave',play); root.addEventListener('focusin',stop); root.addEventListener('focusout',play); go(0); play(); };
+    const initTestimonials = () => { const root = $('#testimonialsCarousel'); const track = root.querySelector('.carousel-track'); const dots = $$('.dot', root); const prev = $('#tPrev'), next = $('#tNext'); let idx = 0, timer; const go = (i) => { idx = Math.max(0, Math.min(dots.length - 1, i)); track.scrollTo({ left: idx * track.clientWidth, behavior: 'smooth' }); dots.forEach((d, j) => d.classList.toggle('active', j === idx)); }; const play = () => { stop(); timer = setInterval(() => go((idx + 1) % dots.length), 3500) }; const stop = () => { if (timer) clearInterval(timer) }; window.addEventListener('resize', () => go(idx)); dots.forEach((d, i) => d.addEventListener('click', () => go(i))); prev.addEventListener('click', () => go(idx - 1)); next.addEventListener('click', () => go(idx + 1)); track.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') go(idx + 1); if (e.key === 'ArrowLeft') go(idx - 1); }); root.addEventListener('mouseenter', stop); root.addEventListener('mouseleave', play); root.addEventListener('focusin', stop); root.addEventListener('focusout', play); go(0); play(); };
 
     // Filters persistence
-    const saveFilters=()=>{ const f={ q:$('#q').value, m:$('#month').value, s:$('#sortTrips').value, max:$('#priceMax').value, budget:budgetMode, currency:currency.code }; try{ localStorage.setItem('filters', JSON.stringify(f)); toast('Filters saved'); }catch{} };
-    const loadFilters=()=>{ try{ const f=JSON.parse(localStorage.getItem('filters')||'null'); if(!f) return; $('#q').value=f.q||''; $('#month').value=f.m||''; $('#sortTrips').value=f.s||'name'; $('#priceMax').value=f.max||'25000'; budgetMode=f.budget||'all'; $$('.seg-btn').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.budget===budgetMode))); if(f.currency && f.currency!==currency.code){ currency.code=f.currency; currency.rate=(currency.code==='USD')?(1/83):1; $('#btnCurrency').textContent=currency.code; } }catch{} };
+    const saveFilters = () => { const f = { q: $('#q').value, m: $('#month').value, s: $('#sortTrips').value, max: $('#priceMax').value, budget: budgetMode, currency: currency.code }; try { localStorage.setItem('filters', JSON.stringify(f)); toast('Filters saved'); } catch { } };
+    const loadFilters = () => { try { const f = JSON.parse(localStorage.getItem('filters') || 'null'); if (!f) return; $('#q').value = f.q || ''; $('#month').value = f.m || ''; $('#sortTrips').value = f.s || 'name'; $('#priceMax').value = f.max || '25000'; budgetMode = f.budget || 'all'; $$('.seg-btn').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.budget === budgetMode))); if (f.currency && f.currency !== currency.code) { currency.code = f.currency; currency.rate = (currency.code === 'USD') ? (1 / 83) : 1; $('#btnCurrency').textContent = currency.code; } } catch { } };
 
     // Theme toggle button
-    const initThemeButton=()=>{ const btn=$('#btnTheme'); btn.addEventListener('click',()=>{ const cur=document.documentElement.getAttribute('data-theme'); const next=cur==='dark'?'light':'dark'; applyTheme(next); btn.setAttribute('aria-pressed',String(next==='dark')); }) };
+    const initThemeButton = () => { const btn = $('#btnTheme'); btn.addEventListener('click', () => { const cur = document.documentElement.getAttribute('data-theme'); const next = cur === 'dark' ? 'light' : 'dark'; applyTheme(next); btn.setAttribute('aria-pressed', String(next === 'dark')); }) };
+
+    // Video switcher - NEW CODE ADDED HERE
+    const initVideoSwitcher = () => {
+      const videoTabs = $$('.video-tab');
+      if (videoTabs.length === 0) return; // Skip if no video section
+
+      videoTabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+          $$('.video-tab').forEach(x => x.setAttribute('aria-pressed', 'false'));
+          btn.setAttribute('aria-pressed', 'true');
+
+          const videoId = btn.dataset.video;
+          const iframe = $('#youtubeVideo');
+          const localVid = $('#localVideo');
+
+          if (videoId === 'local') {
+            // Show local video
+            iframe.style.display = 'none';
+            localVid.style.display = 'block';
+            localVid.play();
+          } else {
+            // Show YouTube video
+            localVid.style.display = 'none';
+            iframe.style.display = 'block';
+            iframe.src = `https://www.youtube.com/embed/${videoId}`;
+          }
+        });
+      });
+    };
 
     // Init
-    const init=()=>{
+    const init = () => {
       initTheme(); initThemeButton(); initNav(); initReveal(); initScrollTop(); initCurrency(); initCountdown();
       loadData(); loadItinerary(); loadFilters(); initBudgetSeg();
       renderDestinations(); renderTrips(); renderEvents(); renderReminderActions(); initBooking(); initTestimonials();
+
+      // Initialize video switcher - NEW LINE ADDED HERE
+      initVideoSwitcher();
+
       // controls
-      $('#q').addEventListener('input',debounce(renderTrips,200)); $('#month').addEventListener('change',renderTrips); $('#sortTrips').addEventListener('change',renderTrips); $('#priceMax').addEventListener('input',()=>{priceBubble(); renderTrips()}); $('#btnOpenModal').addEventListener('click',()=>openModal('modalBackdrop')); $('#btnCloseModal').addEventListener('click',()=>closeModal('modalBackdrop')); $('#openBooking').addEventListener('click',()=>{ closeModal('modalBackdrop'); location.hash='#contact' }); $('#openItinerary').addEventListener('click',()=>{ closeModal('modalBackdrop'); openModal('itineraryModal'); renderItinerary(); }); $('#btnItinerary').addEventListener('click',()=>{ openModal('itineraryModal'); renderItinerary(); }); $('#btnCloseItinerary').addEventListener('click',()=>closeModal('itineraryModal')); $('#btnClearItinerary').addEventListener('click',()=>{ state.itinerary=[]; persistItinerary(); renderItinerary(); toast('Itinerary cleared'); }); $('#btnDownloadItinerary').addEventListener('click',()=>{ const blob=new Blob([JSON.stringify(state.itinerary,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='itinerary.json'; a.click(); URL.revokeObjectURL(a.href); }); $('#btnSaveFilters').addEventListener('click',saveFilters);
+      $('#q').addEventListener('input', debounce(renderTrips, 200));
+      $('#month').addEventListener('change', renderTrips);
+      $('#sortTrips').addEventListener('change', renderTrips);
+      $('#priceMax').addEventListener('input', () => { priceBubble(); renderTrips() });
+      $('#btnOpenModal').addEventListener('click', () => openModal('modalBackdrop'));
+      $('#btnCloseModal').addEventListener('click', () => closeModal('modalBackdrop'));
+      $('#openBooking').addEventListener('click', () => { closeModal('modalBackdrop'); location.hash = '#contact' });
+      $('#openItinerary').addEventListener('click', () => { closeModal('modalBackdrop'); openModal('itineraryModal'); renderItinerary(); });
+      $('#btnItinerary').addEventListener('click', () => { openModal('itineraryModal'); renderItinerary(); });
+      $('#btnCloseItinerary').addEventListener('click', () => closeModal('itineraryModal'));
+      $('#btnClearItinerary').addEventListener('click', () => { state.itinerary = []; persistItinerary(); renderItinerary(); toast('Itinerary cleared'); });
+      $('#btnSaveFilters').addEventListener('click', saveFilters);
+
       // footer year
       $('#year').textContent = new Date().getFullYear();
       // set bubble after possible filter restore
@@ -448,4 +1840,5 @@
     document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
+
 </html>
