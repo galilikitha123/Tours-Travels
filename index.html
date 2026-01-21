@@ -5,6 +5,40 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TravelOne – Premium Tours & Travels Experience</title>
+
+  <script>
+    window.digitalData = {
+      version: "1.0",
+      pageInstanceID: "travelone:public:index",
+      language: "en",
+      page: {
+        pageInfo: {
+          pageID: "travelone.com:home",
+          pageName: "content:travelone:home",
+          pageShortName: "home",
+          title: document.title,
+          server: location.host,
+          destinationURL: location.href,
+          referringURL: document.referrer || "",
+          isIframe: self !== top,
+          contentIframe: false,
+          sysEnv: navigator.userAgent,
+          breadcrumbs: "travelone:in:en",
+          hierarchie1: "travelone:in:en"
+        }
+      },
+      product: [],
+      cart: { productsInCart: 0, subtotal: 0, priceCurrency: "INR" },
+      user: [{
+        profile: [{
+          profileInfo: {},
+          attributes: { loggedIn: false }
+        }]
+      }],
+      event: []
+    };
+  </script>
+
   <meta name="description"
     content="Discover handpicked travel experiences with TravelOne. Book your next adventure with transparent pricing and instant confirmations." />
   <style>
@@ -1278,17 +1312,22 @@
         <div class="grid grid-2">
           <div class="card" style="background: linear-gradient(135deg, var(--surface) 0%, var(--bg) 100%);">
             <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
-              <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">📅</div>
+              <div
+                style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                📅</div>
               <h3 style="margin: 0;">Event Calendar</h3>
             </div>
             <div id="eventList" class="grid" style="gap: 1rem;"></div>
           </div>
           <div class="card" style="background: linear-gradient(135deg, var(--surface) 0%, var(--bg) 100%);">
             <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
-              <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🔔</div>
+              <div
+                style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                🔔</div>
               <h3 style="margin: 0;">My Reminders</h3>
             </div>
-            <p style="color: var(--muted); margin-bottom: 1.5rem; font-size: 0.9375rem;">Set notifications for events you don't want to miss</p>
+            <p style="color: var(--muted); margin-bottom: 1.5rem; font-size: 0.9375rem;">Set notifications for events
+              you don't want to miss</p>
             <div id="eventActions"></div>
           </div>
         </div>
@@ -1440,6 +1479,37 @@
     {"id":203,"title":"Kayaking - Kerala","date":"2026-01-29","type":"Activity"},
     {"id":204,"title":"Beach Clean-up - Goa","date":"2026-04-15","type":"Community"}
   ]</script>
+
+
+  <script>
+    (function primeDataLayer() {
+      try {
+        const dd = window.digitalData;
+
+        const destinations = JSON.parse(document.getElementById('data-destinations')?.textContent || '[]');
+        const trips = JSON.parse(document.getElementById('data-trips')?.textContent || '[]');
+
+        dd.product = trips.map(t => ({
+          productInfo: { productID: String(t.id), productName: t.name },
+          category: { primaryCategory: "Trips", subCategory: t.month },
+          attributes: { price: t.price, days: t.days, rating: t.rating }
+        }));
+
+        let iti = [];
+        try { iti = JSON.parse(localStorage.getItem('itinerary') || '[]'); } catch (e) { }
+
+        dd.cart.productsInCart = iti.length;
+        dd.cart.subtotal = iti.reduce((a, b) => a + (b.price || 0), 0);
+
+        dd.event.push({
+          eventInfo: {
+            eventName: "pageView",
+            timeStamp: new Date().toISOString()
+          }
+        });
+      } catch (e) { }
+    })();
+  </script>
 
   <script>
     // Utilities
@@ -1838,6 +1908,45 @@ Phone: +91 98765 43210
       priceBubble();
     };
     document.addEventListener('DOMContentLoaded', init);
+  </script>
+
+  <script>
+    (function addTelemetryTracking() {
+      const dd = window.digitalData;
+
+      const push = (name, data = {}) => {
+        dd.event.push({
+          eventInfo: { eventName: name, timeStamp: new Date().toISOString() },
+          ...data
+        });
+      };
+
+      // Filters
+      document.getElementById("q")?.addEventListener("input", e =>
+        push("filterApplied", { search: e.target.value })
+      );
+
+      // Add To Itinerary
+      document.getElementById("tripList")?.addEventListener("click", e => {
+        const btn = e.target.closest("[data-add]");
+        if (!btn) return;
+        push("addToCart", { productID: btn.dataset.add });
+      });
+
+      // Booking submit
+      document.getElementById("bookingForm")?.addEventListener("submit", () => {
+        push("checkoutSubmit");
+      });
+
+    })();
+  </script>
+
+  <script>
+    window.travelOneDL = {
+      push(obj) {
+        window.digitalData.event.push(obj);
+      }
+    };
   </script>
 </body>
 
