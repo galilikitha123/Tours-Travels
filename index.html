@@ -4,30 +4,23 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
   <title>TravelOne – Premium Tours & Travels Experience</title>
 
   <script>
-    // Initialize DL (correct)
     window.adobeDataLayer = window.adobeDataLayer || [];
 
-    // Guarantee title is available
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", pushPageLoaded);
-    } else {
-      pushPageLoaded();
-    }
-
-    function pushPageLoaded() {
-      adobeDataLayer.push({
-        event: "pageLoaded",
-        page: {
-          name: document.title || (document.querySelector("title")?.textContent || ""),
-          url: window.location.href
-        }
-      });
-    }
+    adobeDataLayer.push({
+      event: "pageLoaded",
+      page: {
+        pageName: document.title,
+        pageTitle: document.title,
+        name: document.title,
+        url: window.location.href
+      }
+    });
   </script>
-
 
   <meta name="description"
     content="Discover handpicked travel experiences with TravelOne. Book your next adventure with transparent pricing and instant confirmations." />
