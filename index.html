@@ -1948,6 +1948,122 @@ Phone: +91 98765 43210
       }
     };
   </script>
+
+  <script>
+    (function globalUserInteractionTracking() {
+      if (!window.digitalData) window.digitalData = { event: [] };
+
+      const pushEvent = (eventName, payload = {}) => {
+        window.digitalData.event.push({
+          eventInfo: {
+            eventName,
+            timeStamp: new Date().toISOString()
+          },
+          ...payload
+        });
+      };
+
+      // ---------------------------------------
+      // 1️⃣  TRACK ALL CLICKS ON THE SITE
+      // ---------------------------------------
+      document.addEventListener("click", function (e) {
+        const target = e.target.closest("*");
+
+        pushEvent("click", {
+          element: {
+            tag: target.tagName,
+            id: target.id || null,
+            classes: target.className || null,
+            text: (target.innerText || "").trim().slice(0, 50), // Avoid long text
+            type: target.type || null
+          },
+          page: {
+            url: location.href,
+            title: document.title
+          }
+        });
+      });
+
+      // ---------------------------------------
+      // 2️⃣  TRACK ALL INPUT CHANGES
+      // ---------------------------------------
+      document.addEventListener("change", function (e) {
+        const el = e.target;
+
+        pushEvent("inputChange", {
+          element: {
+            tag: el.tagName,
+            id: el.id || null,
+            type: el.type || null,
+            value: el.value || null
+          }
+        });
+      });
+
+      // ---------------------------------------
+      // 3️⃣  TRACK ALL FORM SUBMISSIONS
+      // ---------------------------------------
+      document.addEventListener("submit", function (e) {
+        const form = e.target;
+
+        pushEvent("formSubmit", {
+          form: {
+            id: form.id || null,
+            name: form.name || null
+          }
+        });
+      });
+
+      // ---------------------------------------
+      // 4️⃣  TRACK VIDEO EVENTS (HTML5)
+      // ---------------------------------------
+      document.querySelectorAll("video").forEach(video => {
+        ["play", "pause", "ended"].forEach(eventType => {
+          video.addEventListener(eventType, () => {
+            pushEvent("videoEvent", {
+              media: {
+                id: video.id || null,
+                action: eventType,
+                currentTime: Math.floor(video.currentTime)
+              }
+            });
+          });
+        });
+      });
+
+      // ---------------------------------------
+      // 5️⃣  TRACK LINK NAVIGATION (A TAGS)
+      // ---------------------------------------
+      document.addEventListener("click", function (e) {
+        const link = e.target.closest("a");
+        if (!link) return;
+
+        pushEvent("linkClick", {
+          link: {
+            href: link.href,
+            text: (link.innerText || "").trim()
+          }
+        });
+      });
+
+      // ---------------------------------------
+      // 6️⃣  TRACK CUSTOM DATA-ATTRIBUTE EVENTS
+      // ---------------------------------------
+      document.addEventListener("click", function (e) {
+        const el = e.target.closest("[data-track]");
+        if (!el) return;
+
+        pushEvent(el.getAttribute("data-track"), {
+          element: {
+            id: el.id || null,
+            data: el.dataset
+          }
+        });
+      });
+
+    })();
+  </script>
+
 </body>
 
 </html>
