@@ -7,37 +7,27 @@
   <title>TravelOne – Premium Tours & Travels Experience</title>
 
   <script>
-    window.digitalData = {
-      version: "1.0",
-      pageInstanceID: "travelone:public:index",
-      language: "en",
-      page: {
-        pageInfo: {
-          pageID: "travelone.com:home",
-          pageName: "content:travelone:home",
-          pageShortName: "home",
-          title: document.title,
-          server: location.host,
-          destinationURL: location.href,
-          referringURL: document.referrer || "",
-          isIframe: self !== top,
-          contentIframe: false,
-          sysEnv: navigator.userAgent,
-          breadcrumbs: "travelone:in:en",
-          hierarchie1: "travelone:in:en"
+    // Initialize DL (correct)
+    window.adobeDataLayer = window.adobeDataLayer || [];
+
+    // Guarantee title is available
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", pushPageLoaded);
+    } else {
+      pushPageLoaded();
+    }
+
+    function pushPageLoaded() {
+      adobeDataLayer.push({
+        event: "pageLoaded",
+        page: {
+          name: document.title || (document.querySelector("title")?.textContent || ""),
+          url: window.location.href
         }
-      },
-      product: [],
-      cart: { productsInCart: 0, subtotal: 0, priceCurrency: "INR" },
-      user: [{
-        profile: [{
-          profileInfo: {},
-          attributes: { loggedIn: false }
-        }]
-      }],
-      event: []
-    };
+      });
+    }
   </script>
+
 
   <meta name="description"
     content="Discover handpicked travel experiences with TravelOne. Book your next adventure with transparent pricing and instant confirmations." />
@@ -1482,32 +1472,15 @@
 
 
   <script>
-    (function primeDataLayer() {
-      try {
-        const dd = window.digitalData;
+    (function () {
+      const trips = JSON.parse(document.getElementById("data-trips")?.textContent || "[]");
+      const destinations = JSON.parse(document.getElementById("data-destinations")?.textContent || "[]");
 
-        const destinations = JSON.parse(document.getElementById('data-destinations')?.textContent || '[]');
-        const trips = JSON.parse(document.getElementById('data-trips')?.textContent || '[]');
-
-        dd.product = trips.map(t => ({
-          productInfo: { productID: String(t.id), productName: t.name },
-          category: { primaryCategory: "Trips", subCategory: t.month },
-          attributes: { price: t.price, days: t.days, rating: t.rating }
-        }));
-
-        let iti = [];
-        try { iti = JSON.parse(localStorage.getItem('itinerary') || '[]'); } catch (e) { }
-
-        dd.cart.productsInCart = iti.length;
-        dd.cart.subtotal = iti.reduce((a, b) => a + (b.price || 0), 0);
-
-        dd.event.push({
-          eventInfo: {
-            eventName: "pageView",
-            timeStamp: new Date().toISOString()
-          }
-        });
-      } catch (e) { }
+      adobeDataLayer.push({
+        event: "productCatalogReady",
+        products: trips,
+        destinations: destinations
+      });
     })();
   </script>
 
@@ -1911,71 +1884,20 @@ Phone: +91 98765 43210
   </script>
 
   <script>
-    (function addTelemetryTracking() {
-      const dd = window.digitalData;
+    (function () {
 
-      const push = (name, data = {}) => {
-        dd.event.push({
-          eventInfo: { eventName: name, timeStamp: new Date().toISOString() },
-          ...data
-        });
-      };
-
-      // Filters
-      document.getElementById("q")?.addEventListener("input", e =>
-        push("filterApplied", { search: e.target.value })
-      );
-
-      // Add To Itinerary
-      document.getElementById("tripList")?.addEventListener("click", e => {
-        const btn = e.target.closest("[data-add]");
-        if (!btn) return;
-        push("addToCart", { productID: btn.dataset.add });
-      });
-
-      // Booking submit
-      document.getElementById("bookingForm")?.addEventListener("submit", () => {
-        push("checkoutSubmit");
-      });
-
-    })();
-  </script>
-
-  <script>
-    window.travelOneDL = {
-      push(obj) {
-        window.digitalData.event.push(obj);
-      }
-    };
-  </script>
-
-  <script>
-    (function globalUserInteractionTracking() {
-      if (!window.digitalData) window.digitalData = { event: [] };
-
-      const pushEvent = (eventName, payload = {}) => {
-        window.digitalData.event.push({
-          eventInfo: {
-            eventName,
-            timeStamp: new Date().toISOString()
-          },
-          ...payload
-        });
-      };
-
-      // ---------------------------------------
-      // 1️⃣  TRACK ALL CLICKS ON THE SITE
-      // ---------------------------------------
+      // 1️⃣ Track ALL CLICKS (buttons, links, images, icons, everything)
       document.addEventListener("click", function (e) {
-        const target = e.target.closest("*");
+        const el = e.target.closest("*");
+        if (!el) return;
 
-        pushEvent("click", {
+        adobeDataLayer.push({
+          event: "click",
           element: {
-            tag: target.tagName,
-            id: target.id || null,
-            classes: target.className || null,
-            text: (target.innerText || "").trim().slice(0, 50), // Avoid long text
-            type: target.type || null
+            tag: el.tagName,
+            id: el.id || null,
+            classes: el.className || null,
+            text: (el.innerText || "").trim().slice(0, 50)
           },
           page: {
             url: location.href,
@@ -1984,13 +1906,11 @@ Phone: +91 98765 43210
         });
       });
 
-      // ---------------------------------------
-      // 2️⃣  TRACK ALL INPUT CHANGES
-      // ---------------------------------------
+      // 2️⃣ Track ALL INPUT changes (search, filters, dropdowns, sliders)
       document.addEventListener("change", function (e) {
         const el = e.target;
-
-        pushEvent("inputChange", {
+        adobeDataLayer.push({
+          event: "inputChange",
           element: {
             tag: el.tagName,
             id: el.id || null,
@@ -2000,30 +1920,40 @@ Phone: +91 98765 43210
         });
       });
 
-      // ---------------------------------------
-      // 3️⃣  TRACK ALL FORM SUBMISSIONS
-      // ---------------------------------------
+      // 3️⃣ Track ALL FORM submissions
       document.addEventListener("submit", function (e) {
-        const form = e.target;
-
-        pushEvent("formSubmit", {
+        adobeDataLayer.push({
+          event: "formSubmit",
           form: {
-            id: form.id || null,
-            name: form.name || null
+            id: e.target.id || null,
+            name: e.target.name || null
           }
         });
       });
 
-      // ---------------------------------------
-      // 4️⃣  TRACK VIDEO EVENTS (HTML5)
-      // ---------------------------------------
+      // 4️⃣ Track LINK clicks
+      document.addEventListener("click", function (e) {
+        const link = e.target.closest("a");
+        if (link) {
+          adobeDataLayer.push({
+            event: "linkClick",
+            link: {
+              href: link.href,
+              text: (link.innerText || "").trim()
+            }
+          });
+        }
+      });
+
+      // 5️⃣ Track VIDEO interactions
       document.querySelectorAll("video").forEach(video => {
-        ["play", "pause", "ended"].forEach(eventType => {
-          video.addEventListener(eventType, () => {
-            pushEvent("videoEvent", {
+        ["play", "pause", "ended"].forEach(ev => {
+          video.addEventListener(ev, () => {
+            adobeDataLayer.push({
+              event: "videoEvent",
               media: {
                 id: video.id || null,
-                action: eventType,
+                action: ev,
                 currentTime: Math.floor(video.currentTime)
               }
             });
@@ -2031,34 +1961,15 @@ Phone: +91 98765 43210
         });
       });
 
-      // ---------------------------------------
-      // 5️⃣  TRACK LINK NAVIGATION (A TAGS)
-      // ---------------------------------------
-      document.addEventListener("click", function (e) {
-        const link = e.target.closest("a");
-        if (!link) return;
-
-        pushEvent("linkClick", {
-          link: {
-            href: link.href,
-            text: (link.innerText || "").trim()
-          }
-        });
-      });
-
-      // ---------------------------------------
-      // 6️⃣  TRACK CUSTOM DATA-ATTRIBUTE EVENTS
-      // ---------------------------------------
+      // 6️⃣ Track custom buttons using data-track
       document.addEventListener("click", function (e) {
         const el = e.target.closest("[data-track]");
-        if (!el) return;
-
-        pushEvent(el.getAttribute("data-track"), {
-          element: {
-            id: el.id || null,
-            data: el.dataset
-          }
-        });
+        if (el) {
+          adobeDataLayer.push({
+            event: el.getAttribute("data-track"),
+            details: el.dataset
+          });
+        }
       });
 
     })();
